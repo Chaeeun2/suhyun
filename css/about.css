@@ -89,6 +89,13 @@ body.about-page .nav__lang {
   text-underline-position: from-font;
 }
 
+/* 영문 CV: 모바일에서 Exhibitions 줄바꿈(br) 숨김 → 한 줄 */
+@media (max-width: 767px) {
+  .cv-block__label .cv-label-br {
+    display: none;
+  }
+}
+
 .cv-block__rows {
   display: flex;
   flex-direction: column;
@@ -390,4 +397,13 @@ body.about-page .nav__lang {
   body.about-page .about__intro {
     max-width: 1080px;
   }
+}
+
+/* 영문: 본문 line-height 1.2 */
+html[lang="en"] body.about-page .about__text,
+html[lang="en"] body.about-page .about__cv,
+html[lang="en"] body.about-page .about__cv .cv-block__label,
+html[lang="en"] body.about-page .about__cv .cv-row__year,
+html[lang="en"] body.about-page .about__cv .cv-row__desc {
+  line-height: 1.2;
 }

@@ -23,8 +23,21 @@ function createCvLabel(labelField) {
   const h2 = document.createElement("h2");
   h2.className = "cv-block__label";
   const span = document.createElement("span");
-  span.className = currentLang() === "ko" ? "ko-narrow" : "cv-block__label-text";
-  span.textContent = t(labelField);
+  const lang = currentLang();
+  const text = t(labelField);
+
+  if (lang === "ko") {
+    span.className = "ko-narrow";
+    span.textContent = text;
+  } else {
+    span.className = "cv-block__label-text";
+    if (text.indexOf("<") !== -1) {
+      span.innerHTML = text;
+    } else {
+      span.textContent = text;
+    }
+  }
+
   h2.appendChild(span);
   return h2;
 }

@@ -1,8 +1,8 @@
 /* ============================================================
    폰트 시스템 (한글·영문 자폭 조정)
-   - 영문 / 숫자 / 기호 → Arial (OS 기본 서체)
+   - 영문 / 숫자 / 기호 → Arial (OS 기본 서체), 없으면 Pretendard
    - 한글              → Pretendard (CDN, unicode-range 로 한글만)
-   - 한글·영문·숫자 등 모든 텍스트 자폭 0.83 압축 → js/font-system.js (.char-narrow)
+   - 모든 텍스트 자폭 0.83 압축 → js/font-system.js (.char-narrow)
    ============================================================ */
 @font-face {
   font-family: "Pretendard";
@@ -13,6 +13,20 @@
   unicode-range:
     U+1100-11FF, U+3000-303F, U+3130-318F, U+A960-A97F, U+AC00-D7A3,
     U+D7B0-D7FF, U+FF00-FFEF;
+}
+
+/* Arial 없을 때 영문·숫자·기호용 Pretendard (Latin 등) */
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2")
+    format("woff2-variations");
+  font-weight: 45 920;
+  font-display: swap;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+2070-209F, U+20A0-20CF, U+2100-214F,
+    U+2150-218F, U+2190-21FF, U+2200-22FF, U+2300-23FF, U+2C60-2C7F,
+    U+A720-A7FF, U+FB00-FB4F;
 }
 
 /* ============================================================
@@ -27,7 +41,7 @@
   --color-primary-03: #00d9ff;
   --color-primary-04: #00ff4d;
 
-  /* Font family — Arial(영문) 우선, 한글은 Pretendard 로 자동 대체 */
+  /* Font family — Arial(영문) 우선, 없으면 Pretendard fallback */
   --font-family-ko: Arial, "Pretendard", sans-serif;
   --font-family-en: Arial, "Pretendard", sans-serif;
 
@@ -40,6 +54,7 @@
   --font-size-caption-lg: 28px;
   --font-size-body: 28px;
   --font-size-title: 40px;
+  --font-size-nav: var(--font-size-title);
 
   /* Spacing */
   --spacing-4: 4px;
@@ -66,6 +81,8 @@
 html,
 body {
   height: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE, Edge */
 }
@@ -107,6 +124,7 @@ a {
    음수 margin-right 는 레이아웃 폭에 맞춰 스크립트가 계산해 넣습니다. */
 .char-narrow {
   display: inline-block;
+  -webkit-transform: scaleX(0.83);
   transform: scaleX(0.83);
   transform-origin: left center;
 }
@@ -208,10 +226,15 @@ a {
 
 /* 콘텐츠 항목 — 각각 blend (자식 개별 blend 시 배경(::before)만 보여 흰색으로 보임) */
 .nav__logo,
+.nav__logo .nav__link,
 .nav > .nav__link,
 .nav__lang {
   position: relative;
   z-index: 1;
+  font-family: var(--font-family-en);
+  font-weight: var(--font-weight-regular-en);
+  font-size: var(--font-size-nav);
+  line-height: 1.05;
   color: var(--color-white);
   isolation: isolate;
   mix-blend-mode: difference;
@@ -231,12 +254,12 @@ a {
   pointer-events: none;
 }
 
-/* 호버·active 밑줄 */
-.nav__logo .nav__link:hover,
-.nav > .nav__link:hover,
-.nav > .nav__link.is-active,
-.nav__lang:hover,
-.nav__lang.is-active {
+/* 호버·active 밑줄 — .char-narrow 에 직접 (scaleX transform 과 text-decoration 충돌 방지) */
+.nav__logo .nav__link:hover .char-narrow,
+.nav > .nav__link:hover .char-narrow,
+.nav > .nav__link.is-active .char-narrow,
+.nav__lang:hover .char-narrow,
+.nav__lang.is-active .char-narrow {
   text-decoration: underline;
   text-underline-position: from-font;
   text-decoration-thickness: 3px;
@@ -249,38 +272,34 @@ a {
   cursor: pointer;
 }
 
-/* Mobile: 헤더 28px + underline 2px (전 페이지 공통) */
+/* Mobile: 헤더 28px + underline 2px (전 페이지·인앱 브라우저 공통) */
 @media (max-width: 767px) {
+  :root {
+    --font-size-nav: 28px;
+  }
+
   .nav {
     height: 29px;
     padding: 0 2px 1px;
   }
 
-  .nav__logo.title-en,
-  .nav > .nav__link.title-en,
-  .nav__lang.title-en {
-    font-size: 28px;
+  .nav__logo,
+  .nav__logo .nav__link,
+  .nav > .nav__link,
+  .nav__lang {
+    font-size: var(--font-size-nav);
     line-height: 1;
   }
 
-  .nav__logo .nav__link:hover,
-  .nav > .nav__link:hover,
-  .nav > .nav__link.is-active,
-  .nav__lang:hover,
-  .nav__lang.is-active,
+  .nav__logo .nav__link:hover .char-narrow,
+  .nav > .nav__link:hover .char-narrow,
   .nav > .nav__link.is-active .char-narrow,
+  .nav__lang:hover .char-narrow,
   .nav__lang.is-active .char-narrow,
   .filter.is-active,
   .view.is-active,
   .cv-block__label .char-narrow {
     text-decoration-thickness: 2px;
-  }
-
-  /* font-system .char-narrow — active 밑줄은 글자 span 에 직접 */
-  .nav > .nav__link.is-active .char-narrow,
-  .nav__lang.is-active .char-narrow {
-    text-decoration: underline;
-    text-underline-position: from-font;
   }
 
   .list-row {

@@ -214,3 +214,9 @@ body.detail-page .nav__lang {
     align-items: flex-end;
   }
 }
+
+/* 영문: 본문 line-height 1.2 */
+html[lang="en"] body.detail-page .detail__meta,
+html[lang="en"] body.detail-page .detail__desc {
+  line-height: 1.2;
+}
