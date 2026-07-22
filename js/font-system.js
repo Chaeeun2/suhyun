@@ -1,11 +1,11 @@
 /* ============================================================
-   한글·영문 자폭 조정 시스템 (모든 페이지 공용)
+   자폭 조정 시스템 (모든 페이지 공용)
    ------------------------------------------------------------
    [폰트] Arial(영문) + Pretendard(한글, unicode-range) — CSS가 담당.
-          이 스크립트는 한글·영문 구간에 동일한 자폭 압축(0.83)을 적용합니다.
+          이 스크립트는 모든 텍스트(한글·영문·숫자·기호 등)에 0.83 자폭 압축.
 
    [원리]
-   1) 텍스트에서 한글·영문(Latin) 구간을 찾아 <span class="char-narrow">로 감쌈
+   1) 텍스트에서 공백이 아닌 구간을 <span class="char-narrow">로 감쌈
    2) .char-narrow 는 CSS 에서 transform: scaleX(0.83) 으로 가로만 압축
    3) inline-block + transform 은 레이아웃 폭이 그대로 남아 오른쪽에 빈틈이
       생기므로, 줄어든 만큼(원래폭 * (1 - 0.83))을 음수 margin-right 로 당겨
@@ -22,9 +22,9 @@
   var SCALE = 0.83;
   var NARROW_CLASS = "char-narrow";
 
-  /* 한글 + Latin(영문·악센트 포함) — 압축 대상 */
-  var COMPRESS_TEST = /[\uAC00-\uD7A3\u3130-\u318F\u1100-\u11FF]|\p{Script=Latin}/u;
-  var COMPRESS_RUN = /[\uAC00-\uD7A3\u3130-\u318F\u1100-\u11FF]+|[\p{Script=Latin}]+/gu;
+  /* 공백 제외 모든 텍스트(한글·영문·숫자·기호 등) — 압축 대상 */
+  var COMPRESS_TEST = /\S/u;
+  var COMPRESS_RUN = /\S+/gu;
 
   var SKIP_TAGS = {
     SCRIPT: 1,
@@ -50,6 +50,8 @@
       /* blend 박스: 내부 char-narrow transform 이 mix-blend-mode 를 깨뜨림 (모바일 Safari) */
       if (el.classList.contains("works__filters")) return true;
       if (el.classList.contains("works__views")) return true;
+      if (el.classList.contains("works__filters-outer")) return true;
+      if (el.classList.contains("works__views-outer")) return true;
     }
     return false;
   }
@@ -115,8 +117,8 @@
       if (w) spans[i].style.marginRight = -(w * (1 - SCALE)) + "px";
     }
 
-    /* blend 박스(works 필터·뷰): 박스 단위 scaleX 여백 보정 */
-    var boxes = document.querySelectorAll(".works__filters, .works__views");
+    /* blend 박스: scaleX 는 outer, blend 는 inner — outer 폭 기준 여백 보정 */
+    var boxes = document.querySelectorAll(".works__filters-outer, .works__views-outer");
     for (i = 0; i < boxes.length; i++) boxes[i].style.marginRight = "";
     for (i = 0; i < boxes.length; i++) {
       w = boxes[i].offsetWidth;

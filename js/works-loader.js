@@ -23,9 +23,22 @@ function makeSlug(work, index) {
   return slug;
 }
 
+function parseWorkDate(dateStr) {
+  var parts = (dateStr || "").split("/");
+  var y = parseInt(parts[0], 10) || 0;
+  var m = parseInt(parts[1], 10) || 0;
+  return y * 100 + m;
+}
+
+function sortWorksByDateDesc(raw) {
+  return (raw || []).slice().sort(function (a, b) {
+    return parseWorkDate(b.date) - parseWorkDate(a.date);
+  });
+}
+
 function prepareWorks(raw) {
   var used = {};
-  return (raw || []).map(function (work, index) {
+  return sortWorksByDateDesc(raw).map(function (work, index) {
     var slug = makeSlug(work, index);
     var suffix = 2;
 

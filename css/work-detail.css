@@ -1,13 +1,8 @@
 /* ============================================================
    작품 상세 페이지 (Figma: works-detail)
-   - 배경: primary-04(그린) / 텍스트: 흰색 + mix-blend-difference
+   - 배경: primary-04(그린) — .detail / div 단위 제어
    - 좌: 제목·정보(고정) / 우: 이미지 패널(60vw, min 1080px)
    ============================================================ */
-body.detail-page {
-  background-color: var(--color-primary-04);
-}
-
-/* 헤더: 배경(페이지색) + 텍스트(blend) 분리 */
 body.detail-page .nav::before {
   background-color: var(--color-primary-04);
 }
@@ -21,6 +16,8 @@ body.detail-page .nav__lang {
 }
 
 .detail {
+  min-height: 100dvh;
+  background-color: var(--color-primary-04);
   display: flex;
   align-items: flex-start;
   gap: var(--spacing-40);
@@ -110,18 +107,6 @@ body.detail-page .nav__lang {
     --font-size-caption-lg: 22px;
     --spacing-32: 32px;
     overflow-x: hidden;
-  }
-
-  body.detail-page .nav {
-    height: 29px;
-    padding: 0 2px 1px;
-  }
-
-  body.detail-page .nav__logo.title-en,
-  body.detail-page .nav > .nav__link.title-en,
-  body.detail-page .nav__lang.title-en {
-    font-size: var(--font-size-caption-lg);
-    line-height: 1;
   }
 
   /* Figma: column, padding-top 48px, info-media gap 20px */

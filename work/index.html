@@ -19,7 +19,8 @@
 
     <main class="works">
       <div class="works__bar">
-        <div class="works__filters" id="filters">
+        <div class="works__filters-outer">
+          <div class="works__filters" id="filters">
           <button type="button" class="filter is-active" data-cat="all">all</button>
           <span>/</span>
           <button type="button" class="filter" data-cat="books">books</button>
@@ -29,11 +30,14 @@
           <button type="button" class="filter" data-cat="installation">installation</button>
           <span>/</span>
           <button type="button" class="filter" data-cat="other">other</button>
+          </div>
         </div>
-        <div class="works__views" id="views">
+        <div class="works__views-outer">
+          <div class="works__views" id="views">
           <button type="button" class="view is-active" data-view="grid">grid</button>
           <span>/</span>
           <button type="button" class="view" data-view="list">list</button>
+          </div>
         </div>
       </div>
 

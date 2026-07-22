@@ -2,7 +2,7 @@
    폰트 시스템 (한글·영문 자폭 조정)
    - 영문 / 숫자 / 기호 → Arial (OS 기본 서체)
    - 한글              → Pretendard (CDN, unicode-range 로 한글만)
-   - 한글·영문 자폭 0.83 압축 → js/font-system.js (.char-narrow)
+   - 한글·영문·숫자 등 모든 텍스트 자폭 0.83 압축 → js/font-system.js (.char-narrow)
    ============================================================ */
 @font-face {
   font-family: "Pretendard";
@@ -81,9 +81,8 @@ body {
   background-color: var(--color-white);
 }
 
-/* 메인 페이지만 스크롤 잠금 + 기본 배경색 */
+/* 메인 페이지만 스크롤 잠금 — 배경색은 .stage / .stage__bg 에서 제어 */
 body.main-page {
-  background-color: var(--color-primary-01);
   overflow: hidden;
 }
 
@@ -95,7 +94,7 @@ a {
 /* ============================================================
    공통 유틸
    - blend-text: 흰 글자 + 배경과 색 반전(mix-blend-difference)
-   - char-narrow: 한글·영문 자폭 0.83 압축 (js/font-system.js 가 자동으로 감쌈)
+   - char-narrow: 모든 텍스트 자폭 0.83 압축 (js/font-system.js 가 자동으로 감쌈)
    ============================================================ */
 .blend-text {
   color: var(--color-white);
@@ -104,7 +103,7 @@ a {
 }
 
 /* 한글·영문 자폭 압축(자동 적용):
-   스크립트가 한글·Latin 구간을 이 span 으로 감싸고,
+   스크립트가 공백 제외 텍스트 구간을 이 span 으로 감싸고,
    음수 margin-right 는 레이아웃 폭에 맞춰 스크립트가 계산해 넣습니다. */
 .char-narrow {
   display: inline-block;
@@ -250,17 +249,38 @@ a {
   cursor: pointer;
 }
 
-/* Mobile: 모든 underline 2px (전 페이지 공통) */
+/* Mobile: 헤더 28px + underline 2px (전 페이지 공통) */
 @media (max-width: 767px) {
+  .nav {
+    height: 29px;
+    padding: 0 2px 1px;
+  }
+
+  .nav__logo.title-en,
+  .nav > .nav__link.title-en,
+  .nav__lang.title-en {
+    font-size: 28px;
+    line-height: 1;
+  }
+
   .nav__logo .nav__link:hover,
   .nav > .nav__link:hover,
   .nav > .nav__link.is-active,
   .nav__lang:hover,
   .nav__lang.is-active,
+  .nav > .nav__link.is-active .char-narrow,
+  .nav__lang.is-active .char-narrow,
   .filter.is-active,
   .view.is-active,
   .cv-block__label .char-narrow {
     text-decoration-thickness: 2px;
+  }
+
+  /* font-system .char-narrow — active 밑줄은 글자 span 에 직접 */
+  .nav > .nav__link.is-active .char-narrow,
+  .nav__lang.is-active .char-narrow {
+    text-decoration: underline;
+    text-underline-position: from-font;
   }
 
   .list-row {
@@ -286,7 +306,7 @@ body.main-page .nav__lang {
 .stage {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -304,7 +324,7 @@ body.main-page .nav__lang {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 100vh;
+  height: 100dvh;
   width: auto;
   max-width: 100vw;
   object-fit: contain;
@@ -408,18 +428,6 @@ body.main-page .nav__lang {
     --font-size-caption-lg: 22px;
   }
 
-  body.main-page .nav {
-    height: 29px;
-    padding: 0 2px 1px;
-  }
-
-  body.main-page .nav__logo.title-en,
-  body.main-page .nav > .nav__link.title-en,
-  body.main-page .nav__lang.title-en {
-    font-size: var(--font-size-caption-lg);
-    line-height: 1;
-  }
-
   body.main-page .stage {
     max-width: 100%;
     overflow-x: hidden;
@@ -467,7 +475,7 @@ body.main-page .nav__lang {
     width: 100%;
     height: auto;
     max-width: 100%;
-    max-height: calc(100vh - 80px);
+    max-height: calc(100dvh - 80px);
     transform: translate(-50%, -50%);
     object-fit: contain;
   }
@@ -476,7 +484,7 @@ body.main-page .nav__lang {
 /* --- Wide (min-width: 1440px) --- */
 @media (min-width: 1440px) {
   body.main-page .stage__cover {
-    height: 100vh;
+    height: 100dvh;
     width: auto;
     max-width: 100vw;
   }

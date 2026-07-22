@@ -2,8 +2,11 @@
    작품 목록 페이지 (Figma: works-grid / works-list)
    - 상단 바: 흰 박스 + 검정 글자 + mix-blend-difference → 박스 파랑 / 글자 노랑
    ============================================================ */
-body.works-page {
+/* body 배경은 style.css white 고정 — 페이지색은 .works 에서 제어 */
+.works {
+  min-height: 100dvh;
   background-color: var(--color-primary-02);
+  padding: 72px 0 0;
 }
 
 /* 헤더: 배경(페이지색) + 텍스트(blend) 분리 */
@@ -19,10 +22,6 @@ body.works-page .nav__lang {
   mix-blend-mode: difference;
 }
 
-.works {
-  padding: 72px 0 0;
-}
-
 /* 상단 바 */
 .works__bar {
   display: flex;
@@ -31,6 +30,17 @@ body.works-page .nav__lang {
   padding: 0 0 var(--spacing-20);
   font-family: var(--font-family-en);
   font-size: var(--font-size-caption-lg);
+  mix-blend-mode: difference;
+}
+
+/* 자폭(scaleX)과 blend 를 분리 — iOS Safari 는 같은 요소에 둘 다 있으면 blend 무시
+   바깥(outer): scaleX만 / 안쪽(filters·views): blend만 */
+.works__filters-outer,
+.works__views-outer {
+  width: fit-content;
+  max-width: 100%;
+  transform: scaleX(0.83);
+  transform-origin: left center;
 }
 
 .works__filters,
@@ -39,14 +49,12 @@ body.works-page .nav__lang {
   align-items: center;
   gap: 8px;
   width: fit-content;
-  /* difference(옐로우 배경): 흰 박스→파랑, 검정 글자→노랑
-     font-system 제외 + 박스 단위 scaleX → 모바일 Safari transform 충돌 방지 */
+  max-width: 100%;
+  /* difference(옐로우 배경): 흰 박스→파랑, 검정 글자→노랑 */
   background: var(--color-white);
   color: var(--color-black);
   -webkit-mix-blend-mode: difference;
   mix-blend-mode: difference;
-  transform: scaleX(0.83);
-  transform-origin: left center;
 }
 
 .filter,
@@ -75,6 +83,8 @@ body.works-page .nav__lang {
   align-items: start;
   gap: var(--spacing-8);
   padding: 0;
+  width: 100%;
+  min-width: 0;
 }
 
 /* list 뷰: grid 숨기고 list 표시 */
@@ -96,6 +106,9 @@ body.works-page .nav__lang {
   position: relative;
   display: block;
   width: 100%;
+  min-width: 0;
+  /* iOS: 링크/이미지 위에서도 페이지 세로 스크롤 허용 */
+  touch-action: pan-y;
 }
 
 .grid-item img {
@@ -191,42 +204,33 @@ body.works-page .nav__lang {
   body.works-page {
     --font-size-caption-lg: 22px;
     --font-size-caption-sm: 16px;
-    overflow-x: hidden;
-  }
-
-  body.works-page .nav {
-    height: 29px;
-    padding: 0 2px 1px;
-  }
-
-  body.works-page .nav__logo.title-en,
-  body.works-page .nav > .nav__link.title-en,
-  body.works-page .nav__lang.title-en {
-    font-size: var(--font-size-caption-lg);
-    line-height: 1;
   }
 
   body.works-page .works {
     padding: 49px 0 0;
     max-width: 100%;
-    overflow-x: hidden;
+    /* overflow-x:hidden 은 blend 를 끊을 수 있음 → grid/list 쪽으로만 제한 */
   }
 
   body.works-page .works__bar {
     padding: 0 2px var(--spacing-20);
   }
 
+  body.works-page .works__filters-outer,
+  body.works-page .works__views-outer {
+    max-width: 100%;
+  }
+
   body.works-page .works__filters,
   body.works-page .works__views {
-    width: fit-content;
-    max-width: 100%;
     font-size: var(--font-size-caption-lg);
     line-height: 1;
     padding: 0 2px 4px;
     box-sizing: border-box;
   }
 
-  /* Figma: 2열 grid, gap 8px, 이미지 full width */
+  /* Figma: 2열 grid, gap 8px, 이미지 full width
+     overflow-x:hidden 사용 금지 — iOS 에서 overflow-y:auto 중첩 스크롤 함정 유발 */
   body.works-page .works__grid {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-4);
@@ -278,7 +282,6 @@ body.works-page .nav__lang {
   body.works-page .works {
     padding-top: 60px;
     max-width: 100%;
-    overflow-x: hidden;
   }
 
   body.works-page .works__grid {

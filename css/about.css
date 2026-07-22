@@ -1,14 +1,9 @@
 /* ============================================================
    About 페이지 (Figma: about)
-   - 배경: primary-03(시안) / 텍스트: 흰색 + mix-blend-difference
+   - 배경: primary-03(시안) — .about / div 단위 제어
    - 좌: 이력(학력/개인전/그룹전/클라이언트) / 우: 소개글 + 연락처
-   - 한글·영문 자폭 압축은 js/font-system.js(.char-narrow)가 자동 처리
+   - 모든 텍스트 자폭 압축은 js/font-system.js(.char-narrow)가 자동 처리
    ============================================================ */
-body.about-page {
-  background-color: var(--color-primary-03);
-}
-
-/* 헤더: 배경(페이지색) + 텍스트(blend) 분리 */
 body.about-page .nav::before {
   background-color: var(--color-primary-03);
 }
@@ -22,6 +17,8 @@ body.about-page .nav__lang {
 }
 
 .about {
+  min-height: 100dvh;
+  background-color: var(--color-primary-03);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -107,7 +104,7 @@ body.about-page .nav__lang {
   flex: 0 0 54px;
 }
 
-/* 한글·영문 자폭 압축은 자동 시스템(.char-narrow)이 처리 */
+/* 모든 텍스트 자폭 압축은 자동 시스템(.char-narrow)이 처리 */
 .cv-row__desc {
   flex: 1 1 auto;
 }
@@ -130,7 +127,7 @@ body.about-page .nav__lang {
   line-height: 1.4;
 }
 
-/* 한글·영문 자폭 압축은 자동 시스템(.char-narrow)이 처리 */
+/* 모든 텍스트 자폭 압축은 자동 시스템(.char-narrow)이 처리 */
 .about__text p {
   margin-bottom: 1.4em;
 }
@@ -189,18 +186,6 @@ body.about-page .nav__lang {
     --font-size-caption-md: 18px;
     --spacing-32: 32px;
     overflow-x: hidden;
-  }
-
-  body.about-page .nav {
-    height: 29px;
-    padding: 0 2px 1px;
-  }
-
-  body.about-page .nav__logo.title-en,
-  body.about-page .nav > .nav__link.title-en,
-  body.about-page .nav__lang.title-en {
-    font-size: var(--font-size-caption-lg);
-    line-height: 1;
   }
 
   body.about-page .about {
