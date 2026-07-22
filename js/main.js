@@ -145,6 +145,12 @@ function handleSubmit(e) {
    시작
    ------------------------------------------------------------ */
 function init() {
+  /* URL 에 Index.html 이 보이면 / 로 정리 (로컬·배포 공통) */
+  if (/index\.html$/i.test(location.pathname)) {
+    var clean = location.pathname.replace(/\/index\.html$/i, "/") || "/";
+    history.replaceState(null, "", clean + location.search + location.hash);
+  }
+
   const form = document.querySelector(".typing-box");
   if (form) {
     form.addEventListener("submit", handleSubmit);
