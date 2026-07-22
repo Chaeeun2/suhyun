@@ -1,12 +1,8 @@
 /* ============================================================
-   폰트 시스템 (한글 자폭 조정)
-   - 영문 / 숫자 / 기호 → Arial Narrow (OS 기본 서체라 @font-face 불필요)
-   - 한글              → Pretendard (CDN 웹폰트, @font-face 로 로드)
-   [자동 전환 원리]
-   - font-family 목록에서 "Arial Narrow" 를 앞에 두면 영문은 Arial Narrow 로,
-     한글은 Arial 계열에 글자가 없어 브라우저가 자동으로 다음 후보(Pretendard)를 사용
-   - Pretendard 에는 unicode-range 를 지정해 한글 영역에만 쓰이도록 제한
-   - 한글 자폭 0.83 압축은 js/font-system.js 가 .han-narrow 로 처리
+   폰트 시스템 (한글·영문 자폭 조정)
+   - 영문 / 숫자 / 기호 → Arial (OS 기본 서체)
+   - 한글              → Pretendard (CDN, unicode-range 로 한글만)
+   - 한글·영문 자폭 0.83 압축 → js/font-system.js (.char-narrow)
    ============================================================ */
 @font-face {
   font-family: "Pretendard";
@@ -31,10 +27,9 @@
   --color-primary-03: #00d9ff;
   --color-primary-04: #00ff4d;
 
-  /* Font family — Arial Narrow(영문) 우선, 한글은 Pretendard 로 자동 대체.
-     영문/한글 구분은 브라우저 폰트 fallback 이 글자 단위로 자동 처리 */
-  --font-family-ko: "Arial Narrow", Arial, "Pretendard", sans-serif;
-  --font-family-en: "Arial Narrow", Arial, "Pretendard", sans-serif;
+  /* Font family — Arial(영문) 우선, 한글은 Pretendard 로 자동 대체 */
+  --font-family-ko: Arial, "Pretendard", sans-serif;
+  --font-family-en: Arial, "Pretendard", sans-serif;
 
   /* Font weight */
   --font-weight-regular-en: 400;
@@ -100,7 +95,7 @@ a {
 /* ============================================================
    공통 유틸
    - blend-text: 흰 글자 + 배경과 색 반전(mix-blend-difference)
-   - han-narrow: 한글 자폭 0.83 압축 (js/font-system.js 가 자동으로 감쌈)
+   - char-narrow: 한글·영문 자폭 0.83 압축 (js/font-system.js 가 자동으로 감쌈)
    ============================================================ */
 .blend-text {
   color: var(--color-white);
@@ -108,10 +103,10 @@ a {
   mix-blend-mode: difference;
 }
 
-/* 한글 자폭 압축(자동 적용):
-   스크립트가 한글 구간을 이 span 으로 감싸고,
+/* 한글·영문 자폭 압축(자동 적용):
+   스크립트가 한글·Latin 구간을 이 span 으로 감싸고,
    음수 margin-right 는 레이아웃 폭에 맞춰 스크립트가 계산해 넣습니다. */
-.han-narrow {
+.char-narrow {
   display: inline-block;
   transform: scaleX(0.83);
   transform-origin: left center;
@@ -264,7 +259,7 @@ a {
   .nav__lang.is-active,
   .filter.is-active,
   .view.is-active,
-  .cv-block__label .han-narrow {
+  .cv-block__label .char-narrow {
     text-decoration-thickness: 2px;
   }
 

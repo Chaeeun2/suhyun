@@ -2,7 +2,7 @@
    About 페이지 (Figma: about)
    - 배경: primary-03(시안) / 텍스트: 흰색 + mix-blend-difference
    - 좌: 이력(학력/개인전/그룹전/클라이언트) / 우: 소개글 + 연락처
-   - 한글 자폭 압축은 js/font-system.js(.han-narrow)가 자동 처리
+   - 한글·영문 자폭 압축은 js/font-system.js(.char-narrow)가 자동 처리
    ============================================================ */
 body.about-page {
   background-color: var(--color-primary-03);
@@ -80,9 +80,14 @@ body.about-page .nav__lang {
   word-break: keep-all;
 }
 
-/* font-system 이 한글을 .han-narrow 로 감싸며 scaleX 를 적용하므로,
-   밑줄은 부모가 아니라 글자가 있는 .han-narrow 에 직접 걸어야 보인다 */
-.cv-block__label .han-narrow {
+/* font-system 이 텍스트를 .char-narrow 로 감싸며 scaleX 를 적용하므로,
+   밑줄은 부모가 아니라 글자가 있는 .char-narrow 에 직접 걸어야 보인다 */
+.cv-block__label .char-narrow {
+  text-decoration: underline;
+  text-underline-position: from-font;
+}
+
+.cv-block__label .cv-block__label-text {
   text-decoration: underline;
   text-underline-position: from-font;
 }
@@ -102,7 +107,7 @@ body.about-page .nav__lang {
   flex: 0 0 54px;
 }
 
-/* 한글 자폭 압축은 자동 시스템(.han-narrow)이 처리 */
+/* 한글·영문 자폭 압축은 자동 시스템(.char-narrow)이 처리 */
 .cv-row__desc {
   flex: 1 1 auto;
 }
@@ -125,7 +130,7 @@ body.about-page .nav__lang {
   line-height: 1.4;
 }
 
-/* 한글 자폭 압축은 자동 시스템(.han-narrow)이 처리 */
+/* 한글·영문 자폭 압축은 자동 시스템(.char-narrow)이 처리 */
 .about__text p {
   margin-bottom: 1.4em;
 }

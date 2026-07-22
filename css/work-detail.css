@@ -53,8 +53,7 @@ body.detail-page .nav__lang {
   line-height: 1.05;
 }
 
-.detail__title-text,
-.detail__title > .ko-narrow .han-narrow {
+.detail__title .char-narrow {
   color: var(--color-white);
   isolation: isolate;
   mix-blend-mode: difference;

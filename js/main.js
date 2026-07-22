@@ -90,7 +90,7 @@ function spawnFragment() {
 }
 
 function render(f) {
-  // 낙하 단어는 한글 자폭(0.83)에 맞춰 압축 (word-rain은 자동 시스템에서 제외됨)
+  // 낙하 단어는 자폭(0.83)에 맞춰 압축 (word-rain은 font-system에서 제외)
   f.el.style.transform = `translate(${f.x}px, ${f.y}px) scaleX(0.83)`;
 }
 

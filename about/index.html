@@ -19,87 +19,19 @@
 
     <main class="about">
       <!-- 좌측: 이력 -->
-      <div class="about__cv">
-        <!-- 학력·개인전·그룹전: 라벨 너비를 하나의 그리드로 자동 정렬 -->
-        <div class="cv-grid">
-          <section class="cv-block">
-          <h2 class="cv-block__label"><span class="ko-narrow">학력</span></h2>
-          <div class="cv-block__rows">
-            <div class="cv-row">
-              <span class="cv-row__year">2025</span>
-              <span class="cv-row__desc">서울시립대학교 디자인전문대학원 시각디자인전공 석사과정</span>
-            </div>
-            <div class="cv-row">
-              <span class="cv-row__year">2025</span>
-              <span class="cv-row__desc">서울시립대학교 시각디자인학과 졸업 (우등졸업)</span>
-            </div>
-            <div class="cv-row">
-              <span class="cv-row__year">2023</span>
-              <span class="cv-row__desc">독일 쾰른국제디자인학교(Köln International School of Design, KISD) 교환학생</span>
-            </div>
-          </div>
-        </section>
-
-        <section class="cv-block">
-          <h2 class="cv-block__label"><span class="ko-narrow">개인전</span></h2>
-          <div class="cv-block__rows">
-            <div class="cv-row">
-              <span class="cv-row__year">2026</span>
-              <span class="cv-row__desc">《Undoing》, Cakeshop, 서울</span>
-            </div>
-          </div>
-        </section>
-
-        <section class="cv-block">
-          <h2 class="cv-block__label"><span class="ko-narrow">그룹전</span></h2>
-          <div class="cv-block__rows">
-            <div class="cv-row">
-              <span class="cv-row__year">2025</span>
-              <span class="cv-row__desc">《Gridshift》, 한국타이포그라피학회, 서울</span>
-            </div>
-            <div class="cv-row">
-              <span class="cv-row__year">2025</span>
-              <span class="cv-row__desc">《푸름의 밀도》, 청년예술매거진 Dear.A 제3회 예술 컨퍼런스 기획전, 성신여자대학교 가온갤러리, 서울</span>
-            </div>
-          </div>
-          </section>
-        </div>
-
-        <!-- 클라이언트: 그리드와 별개로 독립 구성 -->
-        <section class="cv-block cv-block--full">
-          <h2 class="cv-block__label"><span class="ko-narrow">클라이언트</span></h2>
-          <div class="cv-block__rows">
-            <div class="cv-row cv-row--full">
-              <span class="cv-row__desc">무신사, 코오롱스포츠, 슬기와 민, 블루메미술관(BMCA), 오민, 케이크샵(Cakeshop), 하보, 해파, 샌드박스게이밍(SBXG), 서울시립대학교</span>
-            </div>
-          </div>
-        </section>
-      </div>
+      <div class="about__cv" id="aboutCv"></div>
 
       <!-- 우측: 소개글 + 연락처 -->
       <div class="about__intro">
-        <div class="about__text blend-text">
-          <p class="about__name">윤수현(Su)</p>
-          <p>윤수현은 서울을 기반으로 활동하는 그래픽 디자이너다. 출판, 전시, 인터랙티브 설치, 웹 기반 프로젝트를 넘나들며 이미지가 생성되고 유통되는 방식을 탐구한다. 최근에는 경험이 곧 그래픽이 되는 방식을 탐구하며, 그래픽을 사후의 기록이 아닌 끊임없이 생성되고 변화하는 매체로 다루고 있다.</p>
-          <p>서울시립대학교 시각디자인학과를 졸업하고, 독일 쾰른국제디자인학교(Köln International School of Design, KISD)에서 교환학생으로 수학했다. 현재 서울시립대학교 시각디자인전공 석사과정에 재학 중이다.</p>
-          <p>언더그라운드 아트 컬렉티브 <mark class="hl">Raw Hearts</mark>의 아트 디렉터로 활동하며 전시, 파티, 출판 등 다양한 프로젝트의 비주얼 아이덴티티를 기획하고 있다. 또한 문화, 음악, 패션을 주제로 에디토리얼 작업을 병행하며 <mark class="hl">무신사</mark>, <mark class="hl">Habo</mark>, <mark class="hl">Cakeshop</mark> 등을 비롯한 여러 브랜드에서 인터뷰, 아티클, 큐레이션 콘텐츠를 제작해 왔다. 동시대 시각문화와 서브컬처를 기록하고 해석하는 작업을 지속하고 있다.</p>
-          <p>최근에는 개인전 Undoing을 비롯한 참여형 설치 작업과 독립 출판 프로젝트를 통해 그래픽 디자인의 확장 가능성을 탐구하고 있으며, 연구와 실천을 병행하며 그래픽 디자인의 새로운(혹은 이미 가지고 있었던) 역할을 실험하고 있다.</p>
-        </div>
-
-        <div class="about__contact blend-text">
-          <div class="contact-row">
-            <span class="contact-row__label">email</span>
-            <span class="contact-row__value">syoun.kr@gmail.com</span>
-          </div>
-          <div class="contact-row">
-            <span class="contact-row__label">instagram</span>
-            <span class="contact-row__value">@suhyun.youn</span>
-          </div>
-        </div>
+        <div class="about__text blend-text" id="aboutText"></div>
+        <div class="about__contact blend-text" id="aboutContact"></div>
       </div>
     </main>
 
     <script src="../js/lang.js"></script>
+    <script src="../js/work-text.js"></script>
+    <script src="../js/about-loader.js"></script>
+    <script src="../js/about.js"></script>
     <script src="../js/font-system.js"></script>
   </body>
 </html>

@@ -1,0 +1,18 @@
+{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      ".cursor/**",
+      ".figma-ref/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/",
+        "destination": "/Index.html"
+      }
+    ]
+  }
+}

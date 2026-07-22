@@ -1,7 +1,6 @@
 /* ============================================================
    작품 목록 페이지 (Figma: works-grid / works-list)
-   - 배경: primary-02(옐로우) / 텍스트: 흰색 + mix-blend-difference
-   - 상단 바: 카테고리 필터(좌) + grid/list 토글(우)
+   - 상단 바: 흰 박스 + 검정 글자 + mix-blend-difference → 박스 파랑 / 글자 노랑
    ============================================================ */
 body.works-page {
   background-color: var(--color-primary-02);
@@ -39,10 +38,15 @@ body.works-page .nav__lang {
   display: flex;
   align-items: center;
   gap: 8px;
+  width: fit-content;
+  /* difference(옐로우 배경): 흰 박스→파랑, 검정 글자→노랑
+     font-system 제외 + 박스 단위 scaleX → 모바일 Safari transform 충돌 방지 */
   background: var(--color-white);
   color: var(--color-black);
-  isolation: isolate;
+  -webkit-mix-blend-mode: difference;
   mix-blend-mode: difference;
+  transform: scaleX(0.83);
+  transform-origin: left center;
 }
 
 .filter,
