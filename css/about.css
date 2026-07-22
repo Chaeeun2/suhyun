@@ -147,7 +147,11 @@ body.about-page .nav__lang {
   margin-bottom: 0 !important;
 }
 
-/* 강조(하이라이트) 단어 */
+/* 강조(하이라이트) 단어 — 인라인 텍스트와 동일한 줄 흐름 */
+.about__text mark.hl {
+  display: inline;
+}
+
 .hl {
   background: var(--color-white);
   color: var(--color-black);

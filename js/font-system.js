@@ -31,6 +31,7 @@
     if (SKIP_TAGS[el.nodeName]) return true;
     if (el.classList) {
       if (el.classList.contains(NARROW_CLASS)) return true;
+      if (el.classList.contains("char-narrow--flow")) return true;
       if (el.classList.contains("han-narrow")) return true;
       if (el.classList.contains("word-rain")) return true;
       if (el.classList.contains("word-fragment")) return true;

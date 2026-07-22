@@ -101,6 +101,16 @@ function renderCv(data) {
   }
 }
 
+function wrapHlParagraph(p) {
+  if (!p.querySelector(".hl")) return;
+  if (p.querySelector(":scope > .char-narrow--flow")) return;
+
+  const wrap = document.createElement("span");
+  wrap.className = "char-narrow char-narrow--flow";
+  while (p.firstChild) wrap.appendChild(p.firstChild);
+  p.appendChild(wrap);
+}
+
 function renderIntro(data) {
   textEl.innerHTML = "";
 
@@ -117,6 +127,7 @@ function renderIntro(data) {
     } else {
       p.textContent = html;
     }
+    wrapHlParagraph(p);
     textEl.appendChild(p);
   });
 }
@@ -146,6 +157,7 @@ function render() {
   renderCv(aboutData);
   renderIntro(aboutData);
   renderContact(aboutData);
+  if (window.FontNarrow) window.FontNarrow.refresh();
 }
 
 loadAboutData(ROOT)
