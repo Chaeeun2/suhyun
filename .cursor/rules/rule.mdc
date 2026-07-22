@@ -1,0 +1,127 @@
+---
+alwaysApply: true
+---
+
+# HTML/CSS/JS 웹사이트 + Figma MCP 작업 규칙
+
+이 프로젝트는 HTML, CSS, JavaScript를 기반으로 하는 웹사이트입니다.
+
+작업 계획, 코드에 대한 분석과 설명은 모두 초보자도 알 수 있을 만큼 쉽게 설명합니다.
+
+기본 구조는 프로젝트에 이미 있는 파일과 폴더 구조를 우선 따릅니다.
+
+새 프로젝트인 경우에는 아래 구조를 기본으로 사용합니다.
+
+```txt
+index.html
+css/style.css
+js/script.js
+images/
+```
+
+별도 요청이 없으면 React, Vue, Next.js, TypeScript, Tailwind CSS, Bootstrap, jQuery, npm 패키지, 빌드 도구, 외부 라이브러리를 사용하지 않습니다.
+
+Figma MCP 결과가 React, Tailwind, JSX 중심으로 나오더라도 그대로 쓰지 말고 순수 HTML, CSS, JavaScript로 변환합니다.
+
+Figma Variables는 CSS 변수로 변환합니다.
+
+CSS 변수는 Figma에서 Variables로 등록된 값만 사용합니다.
+
+Figma에 변수로 등록되어 있지 않은 색상, 여백, 폰트, radius, container 값은 임의로 CSS 변수화하지 않습니다.
+
+Figma Variables에 Mode가 있는 경우, 처음 변수 추출 단계에서 모든 Mode 값을 함께 확인합니다.
+
+Mode명이 Desktop, PC, Tablet, Mobile 등 화면 크기 기준이라면 CSS 변수의 기본값은 Desktop 또는 PC 값을 기준으로 작성하고, Tablet/Mobile 값은 media query 안에서 CSS 변수 값만 재정의합니다.
+
+예시는 아래와 같습니다.
+
+```css
+:root {
+  --spacing-section-y: 120px;
+  —font-size-title: 64px;
+}
+
+@media (max-width: 1023px) {
+  :root {
+    —spacing-section-y: 80px;
+    —font-size-title: 48px;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --spacing-section-y: 64px;
+    --font-size-title: 36px;
+  }
+}
+```
+
+이때 반응형 레이아웃 전체를 미리 구현하지는 않습니다.
+
+사용자가 반응형 구현을 요청하기 전에는 현재 기준 화면의 구조를 우선 구현하되, Mode가 있는 변수 값은 추후 반응형 작업에 사용할 수 있도록 CSS 변수 형태로 미리 정리합니다.
+
+사용자가 이후 반응형 구현을 요청하면, 기존에 정리된 Mode 기반 CSS 변수를 우선 활용하고, 필요한 경우 Figma MCP로 변수를 다시 확인합니다.
+
+Figma MCP가 현재 선택된 프레임의 적용 Mode 값만 제공하는 경우, 임의로 다른 Mode 값을 추측하지 않습니다.
+
+다른 Mode 값이 필요한 경우에는 Figma Variables의 전체 Mode 값을 다시 확인하거나 사용자에게 확인을 요청합니다.
+
+Mode명이 Light, Dark 등 테마 기준이라면 `:root`에는 기본 모드 값을 작성하고, `[data-theme="dark"]` 또는 `.theme-dark` 안에서 해당 Mode 값을 재정의합니다.
+
+예시는 아래와 같습니다.
+
+```css
+:root {
+  --color-background: #ffffff;
+  --color-text: #111111;
+}
+
+[data-theme="dark"] {
+  --color-background: #111111;
+  --color-text: #ffffff;
+}
+```
+
+Figma Color Style과 Text Style은 기존 HTML/CSS 구조에 맞게 반영합니다.
+
+모든 텍스트 요소의 class에는 가능한 한 Figma Text Style명을 반영합니다.
+
+Figma Text Style명이 코드 클래스명으로 부적합한 경우에는 의미는 유지하되 CSS 클래스명으로 읽기 쉽게 정리합니다.
+
+Figma Auto Layout은 CSS Flex 또는 Grid로 변환합니다.
+
+Figma Component는 재사용 가능한 HTML 구조와 CSS 클래스로 변환합니다.
+
+클래스명은 역할이 드러나도록 작성합니다.
+
+Figma 레이어명이 규칙에 맞게 잘 정리되어 있다면 그대로 사용할 수 있고, 그렇지 않다면 코드에서 이해하기 쉬운 이름으로 정리합니다.
+
+요청 내용과 관련 없는 페이지, 섹션, 스타일, 스크립트, 클래스명, 파일명, 폴더 구조는 수정하지 않습니다.
+
+대규모 리팩토링은 사용자가 명확히 요청한 경우에만 진행합니다.
+
+수정 전에는 변경할 파일과 이유를 간단히 설명하고, 필요한 경우 확인을 받은 뒤 수정합니다.
+
+수정 후에는 변경한 파일, 수정 내용, 브라우저에서 확인할 내용을 짧게 요약합니다.
+
+HTML은 시맨틱하게 작성합니다.
+
+한 페이지에는 `h1`을 하나만 사용하고, 제목 태그는 의미에 맞는 순서로 사용합니다.
+
+기존 프로젝트에서는 이미 사용 중인 CSS/JS 파일 구조를 우선 따릅니다.
+
+새 프로젝트에서는 처음에는 `css/style.css`, `js/script.js`로 단순하게 시작합니다.
+
+다만 페이지, 섹션, 컴포넌트, 인터랙션이 많아져 한 파일이 복잡해지면 사용자의 확인을 받은 뒤 역할별 파일로 분리합니다.
+
+HTML이나 CSS만으로 가능한 작업에는 JavaScript를 추가하지 않습니다.
+
+이벤트를 연결하기 전에는 요소가 존재하는지 확인합니다.
+
+사용자가 요청하지 않으면 반응형은 먼저 현재 기준 화면을 구현한 뒤 별도 단계로 진행합니다.
+
+단, Figma Variables의 Mode가 Desktop/Mobile/Tablet처럼 반응형 기준으로 설정되어 있는 경우에는 반응형 레이아웃 전체를 구현하지 않더라도 해당 Mode 값을 CSS 변수와 media query 형태로 미리 정리합니다.
+
+반응형 작업을 진행할 때는 Figma Variables의 Mode 값을 우선 기준으로 삼고, Figma에 정의되지 않은 수치는 임의로 추가하지 않습니다.
+
+Figma에 반응형 기준이 명확하지 않은 경우에는 기존 화면을 기준으로 자연스럽게 줄어드는 구조를 제안하되, 실제 적용 전 사용자에게 확인합니다.

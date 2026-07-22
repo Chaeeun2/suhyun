@@ -1,0 +1,159 @@
+/* ============================================================
+   About 페이지 (Figma: about)
+   - 배경: primary-03(시안) / 텍스트: 흰색 + mix-blend-difference
+   - 좌: 이력(학력/개인전/그룹전/클라이언트) / 우: 소개글 + 연락처
+   - 한글 자폭 압축은 js/font-system.js(.han-narrow)가 자동 처리
+   ============================================================ */
+body.about-page {
+  background-color: var(--color-primary-03);
+}
+
+/* 헤더: 배경(페이지색) + 텍스트(blend) 분리 */
+body.about-page .nav::before {
+  background-color: var(--color-primary-03);
+}
+
+body.about-page .nav__logo,
+body.about-page .nav > .nav__link,
+body.about-page .nav__lang {
+  color: var(--color-white);
+  isolation: isolate;
+  mix-blend-mode: difference;
+}
+
+.about {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-40);
+  padding: 72px 0 0;
+}
+
+/* ------------------------------------------------------------
+   좌측 이력
+   ------------------------------------------------------------ */
+.about__cv {
+  flex: 0 0 466px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-28);
+  font-family: var(--font-family-ko);
+  font-weight: var(--font-weight-regular-ko);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+}
+
+/* 학력·개인전·그룹전: 라벨(1열)과 내용(2열)을 하나의 공통 그리드로 묶는다.
+   1열을 max-content 로 두면 라벨 열 너비가 세 라벨 중 "가장 긴 것"에 자동으로 맞춰진다. */
+.cv-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: var(--spacing-40);
+  row-gap: var(--spacing-28);
+  align-items: start;
+}
+
+/* 그리드 안의 블록 래퍼는 레이아웃에서 투명하게 만들어 label·rows가 부모 그리드에 직접 배치 */
+.cv-grid > .cv-block {
+  display: contents;
+}
+
+/* 클라이언트: 그리드와 무관하게 라벨+내용을 단독으로 배치 */
+.cv-block--full {
+  display: flex;
+  gap: var(--spacing-40);
+  align-items: flex-start;
+}
+
+.cv-block__label {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular-ko);
+  word-break: keep-all;
+}
+
+/* font-system 이 한글을 .han-narrow 로 감싸며 scaleX 를 적용하므로,
+   밑줄은 부모가 아니라 글자가 있는 .han-narrow 에 직접 걸어야 보인다 */
+.cv-block__label .han-narrow {
+  text-decoration: underline;
+  text-underline-position: from-font;
+}
+
+.cv-block__rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.cv-row {
+  display: flex;
+  gap: var(--spacing-12);
+  align-items: flex-start;
+}
+
+.cv-row__year {
+  flex: 0 0 54px;
+}
+
+/* 한글 자폭 압축은 자동 시스템(.han-narrow)이 처리 */
+.cv-row__desc {
+  flex: 1 1 auto;
+}
+
+/* ------------------------------------------------------------
+   우측 소개글 + 연락처
+   ------------------------------------------------------------ */
+.about__intro {
+  flex: 1 1 auto;
+  max-width: 1080px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-80);
+}
+
+.about__text {
+  font-family: var(--font-family-ko);
+  font-weight: var(--font-weight-regular-ko);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+}
+
+/* 한글 자폭 압축은 자동 시스템(.han-narrow)이 처리 */
+.about__text p {
+  margin-bottom: 1.4em;
+}
+
+.about__text p:last-child {
+  margin-bottom: 0;
+}
+
+.about__name {
+  margin-bottom: 0 !important;
+}
+
+/* 강조(하이라이트) 단어 */
+.hl {
+  background: var(--color-white);
+  color: var(--color-black);
+  padding: 0 2px;
+}
+
+/* 연락처 */
+.about__contact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  font-family: var(--font-family-en);
+  font-size: var(--font-size-caption-lg);
+  line-height: 1;
+}
+
+.contact-row {
+  display: flex;
+  gap: var(--spacing-8);
+  align-items: center;
+}
+
+.contact-row__value {
+  background: var(--color-white);
+  color: var(--color-black);
+  padding: 0 2px;
+}

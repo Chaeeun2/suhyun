@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>윤수현 — Su</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="main-page">
+    <!-- 상단 네비게이션 (Figma: Frame 7) -->
+    <header class="nav">
+      <div class="nav__logo title-en">
+        <a class="nav__link" href="./Index.html">su</a><a class="nav__link" href="https://www.instagram.com/suhyun.youn" target="_blank" rel="noopener noreferrer">u</a><span class="nav__text">uuu</span><span class="nav__text" aria-hidden="true">u</span>
+      </div>
+      <a class="nav__link title-en" href="work/">work</a>
+      <a class="nav__link title-en" href="about/">about</a>
+      <button class="nav__lang title-en" type="button">en</button>
+    </header>
+
+    <!-- 메인 무대: 배경색 + 작품 커버 순환 + 단어 파편 낙하 -->
+    <main class="stage">
+      <div class="stage__bg"></div>
+      <img class="stage__cover" alt="" />
+      <div class="word-rain" aria-hidden="true"></div>
+
+      <!-- 산성비 입력창 (Figma: Frame 27) -->
+      <form class="typing-box" autocomplete="off">
+        <input
+          class="typing-box__input"
+          type="text"
+          name="typing"
+          placeholder="typing..."
+          aria-label="떨어지는 단어를 입력하세요"
+        />
+        <button class="typing-box__send title-en" type="submit">send</button>
+      </form>
+    </main>
+
+    <script src="js/font-system.js"></script>
+    <script src="js/works-loader.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

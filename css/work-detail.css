@@ -1,0 +1,80 @@
+/* ============================================================
+   작품 상세 페이지 (Figma: works-detail)
+   - 배경: primary-04(그린) / 텍스트: 흰색 + mix-blend-difference
+   - 좌: 제목·정보(고정) / 우: 이미지 패널(60vw, min 1080px)
+   ============================================================ */
+body.detail-page {
+  background-color: var(--color-primary-04);
+}
+
+/* 헤더: 배경(페이지색) + 텍스트(blend) 분리 */
+body.detail-page .nav::before {
+  background-color: var(--color-primary-04);
+}
+
+body.detail-page .nav__logo,
+body.detail-page .nav > .nav__link,
+body.detail-page .nav__lang {
+  color: var(--color-white);
+  isolation: isolate;
+  mix-blend-mode: difference;
+}
+
+.detail {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-40);
+  padding: 72px 0 0;
+}
+
+/* 좌측 정보: 스크롤해도 상단에 고정 */
+.detail__info {
+  position: sticky;
+  top: 72px;
+  width: calc(40vw - var(--spacing-40));
+  min-width: 300px;
+  isolation: isolate;
+  mix-blend-mode: difference;
+}
+
+.detail__title {
+  font-family: var(--font-family-ko);
+  font-weight: var(--font-weight-regular-ko);
+  font-size: var(--font-size-title);
+  line-height: 1.05;
+  margin-bottom: var(--spacing-8);
+}
+
+.detail__meta {
+  font-family: var(--font-family-ko);
+  font-weight: var(--font-weight-regular-ko);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+  margin-bottom: var(--spacing-40);
+  white-space: pre-line;
+}
+
+.detail__desc {
+  font-family: var(--font-family-ko);
+  font-weight: var(--font-weight-regular-ko);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+/* 우측 이미지 패널 */
+.detail__media {
+  flex: 0 0 60vw;
+  width: 60vw;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-4);
+}
+
+.detail__media img,
+.detail__media video {
+  width: 100%;
+  height: auto;
+  display: block;
+}

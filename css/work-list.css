@@ -1,0 +1,168 @@
+/* ============================================================
+   작품 목록 페이지 (Figma: works-grid / works-list)
+   - 배경: primary-02(옐로우) / 텍스트: 흰색 + mix-blend-difference
+   - 상단 바: 카테고리 필터(좌) + grid/list 토글(우)
+   ============================================================ */
+body.works-page {
+  background-color: var(--color-primary-02);
+}
+
+/* 헤더: 배경(페이지색) + 텍스트(blend) 분리 */
+body.works-page .nav::before {
+  background-color: var(--color-primary-02);
+}
+
+body.works-page .nav__logo,
+body.works-page .nav > .nav__link,
+body.works-page .nav__lang {
+  color: var(--color-white);
+  isolation: isolate;
+  mix-blend-mode: difference;
+}
+
+.works {
+  padding: 72px 0 0;
+}
+
+/* 상단 바 */
+.works__bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0 var(--spacing-20);
+  font-family: var(--font-family-en);
+  font-size: var(--font-size-caption-lg);
+}
+
+.works__filters,
+.works__views {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-white);
+  color: var(--color-black);
+  isolation: isolate;
+  mix-blend-mode: difference;
+}
+
+.filter,
+.view {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  text-underline-position: from-font;
+  padding: 0;
+}
+
+.filter.is-active,
+.view.is-active {
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------
+   그리드 뷰: 4열 일반 grid
+   ------------------------------------------------------------ */
+.works__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: start;
+  gap: var(--spacing-8);
+  padding: 0;
+}
+
+/* list 뷰: grid 숨기고 list 표시 */
+.works.is-list-view .works__grid {
+  display: none;
+}
+
+.works__list {
+  display: none;
+  padding: 0;
+}
+
+.works.is-list-view .works__list {
+  display: block;
+}
+
+/* 셀 높이에 늘어나지 않게 → absolute 제목이 이미지 우하단에 붙음 */
+.grid-item {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.grid-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 바깥 박스: 배경색(primary-02)만 담당 — 블렌드 없이 그대로 표시 */
+.grid-item__title {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 0 2px;
+  background: var(--color-primary-02);
+  font-family: var(--font-family-ko);
+  font-weight: var(--font-weight-regular-ko);
+  font-size: var(--font-size-caption-sm);
+  line-height: 1.2;
+}
+
+/* 안쪽 글자: 흰색 + 블렌드(뒤 배경과 색이 반전되어 보임) */
+.grid-item__title-text {
+  color: var(--color-white);
+  isolation: isolate;
+  mix-blend-mode: difference;
+}
+
+/* ------------------------------------------------------------
+   리스트 뷰: 제목 | 카테고리 | 날짜 (아래 밑줄)
+   ------------------------------------------------------------ */
+
+.list-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 20px 0 4px 0;
+  border-bottom: 3px solid;
+  font-family: var(--font-family-en);
+  font-size: var(--font-size-title);
+  line-height: 1.05;
+  cursor: pointer;
+}
+
+.list-row__title {
+  font-family: var(--font-family-ko);
+  font-weight: var(--font-weight-regular-ko);
+}
+
+.list-row__cat {
+  text-align: center;
+}
+
+.list-row__date {
+  text-align: right;
+}
+
+/* 호버 썸네일 (마우스를 따라다님) */
+.works__preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 180px;
+  height: auto;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  z-index: 30;
+  transition: opacity 0.15s ease;
+}
+
+.works__preview.is-visible {
+  opacity: 1;
+}

@@ -1,0 +1,331 @@
+/* ============================================================
+   폰트 시스템 (한글 자폭 조정)
+   - 영문 / 숫자 / 기호 → Arial Narrow (OS 기본 서체라 @font-face 불필요)
+   - 한글              → Pretendard (CDN 웹폰트, @font-face 로 로드)
+   [자동 전환 원리]
+   - font-family 목록에서 "Arial Narrow" 를 앞에 두면 영문은 Arial Narrow 로,
+     한글은 Arial 계열에 글자가 없어 브라우저가 자동으로 다음 후보(Pretendard)를 사용
+   - Pretendard 에는 unicode-range 를 지정해 한글 영역에만 쓰이도록 제한
+   - 한글 자폭 0.83 압축은 js/font-system.js 가 .han-narrow 로 처리
+   ============================================================ */
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2")
+    format("woff2-variations");
+  font-weight: 45 920;
+  font-display: swap;
+  unicode-range:
+    U+1100-11FF, U+3000-303F, U+3130-318F, U+A960-A97F, U+AC00-D7A3,
+    U+D7B0-D7FF, U+FF00-FFEF;
+}
+
+/* ============================================================
+   Figma Variables → CSS 변수 (Figma에 등록된 값만 사용)
+   ============================================================ */
+:root {
+  /* Color */
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-primary-01: #d298ff;
+  --color-primary-02: #fffb00;
+  --color-primary-03: #00d9ff;
+  --color-primary-04: #00ff4d;
+
+  /* Font family — Arial Narrow(영문) 우선, 한글은 Pretendard 로 자동 대체.
+     영문/한글 구분은 브라우저 폰트 fallback 이 글자 단위로 자동 처리 */
+  --font-family-ko: "Arial Narrow", Arial, "Pretendard", sans-serif;
+  --font-family-en: "Arial Narrow", Arial, "Pretendard", sans-serif;
+
+  /* Font weight */
+  --font-weight-regular-en: 400;
+  --font-weight-regular-ko: 500;
+
+  /* Font size */
+  --font-size-caption-sm: 20px;
+  --font-size-caption-lg: 28px;
+  --font-size-body: 28px;
+  --font-size-title: 40px;
+
+  /* Spacing */
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-20: 20px;
+  --spacing-28: 28px;
+  --spacing-40: 40px;
+  --spacing-56: 56px;
+  --spacing-80: 80px;
+}
+
+/* ============================================================
+   Reset
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE, Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+body {
+  font-family: var(--font-family-ko);
+  color: var(--color-black);
+  background-color: var(--color-white);
+}
+
+/* 메인 페이지만 스크롤 잠금 + 기본 배경색 */
+body.main-page {
+  background-color: var(--color-primary-01);
+  overflow: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ============================================================
+   공통 유틸
+   - blend-text: 흰 글자 + 배경과 색 반전(mix-blend-difference)
+   - han-narrow: 한글 자폭 0.83 압축 (js/font-system.js 가 자동으로 감쌈)
+   ============================================================ */
+.blend-text {
+  color: var(--color-white);
+  isolation: isolate;
+  mix-blend-mode: difference;
+}
+
+/* 한글 자폭 압축(자동 적용):
+   스크립트가 한글 구간을 이 span 으로 감싸고,
+   음수 margin-right 는 레이아웃 폭에 맞춰 스크립트가 계산해 넣습니다. */
+.han-narrow {
+  display: inline-block;
+  transform: scaleX(0.83);
+  transform-origin: left center;
+}
+
+/* 과거 수동 압축 클래스 → 이제 자동 시스템이 처리하므로 압축 효과는 제거
+   (기존 마크업 호환 및 밑줄 등 다른 스타일 유지용) */
+.ko-narrow {
+  display: inline;
+}
+
+/* ============================================================
+   Text Style (Figma)
+   ============================================================ */
+.title-en {
+  font-family: var(--font-family-en);
+  font-weight: var(--font-weight-regular-en);
+  font-size: var(--font-size-title);
+  line-height: 1.05;
+}
+
+/* ============================================================
+   네비게이션 (Figma: Frame 7)
+   - 로고 / work / about / en — flex space-between
+   - ::before = 페이지색 배경(블렌드 없음)
+   - 각 항목에 blend → 글자·밑줄이 함께 반전
+   - 밑줄은 text-decoration underline (header padding-bottom 으로 잘림 방지)
+   ============================================================ */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 42px;
+  padding: 0 0 1px;
+  color: var(--color-white);
+}
+
+/* 헤더 배경 레이어 — 페이지별 색은 about/work CSS에서 ::before에 지정 */
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* 콘텐츠 항목 — 각각 blend (자식 개별 blend 시 배경(::before)만 보여 흰색으로 보임) */
+.nav__logo,
+.nav > .nav__link,
+.nav__lang {
+  position: relative;
+  z-index: 1;
+  color: var(--color-white);
+  isolation: isolate;
+  mix-blend-mode: difference;
+}
+
+.nav__logo {
+  letter-spacing: -0.02em;
+}
+
+.nav__logo .nav__link,
+.nav > .nav__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav__text {
+  pointer-events: none;
+}
+
+/* 호버·active 밑줄 */
+.nav__logo .nav__link:hover,
+.nav > .nav__link:hover,
+.nav > .nav__link.is-active,
+.nav__lang:hover {
+  text-decoration: underline;
+  text-underline-position: from-font;
+  text-decoration-thickness: 3px;
+}
+
+.nav__lang {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* 메인 페이지: 헤더(.nav) 전체에 blend — 내부 요소 개별 blend 해제 */
+body.main-page .nav {
+  isolation: isolate;
+  mix-blend-mode: difference;
+}
+
+body.main-page .nav__logo,
+body.main-page .nav > .nav__link,
+body.main-page .nav__lang {
+  mix-blend-mode: normal;
+}
+
+/* ============================================================
+   무대 (배경색 + 작품 커버 순환)
+   ============================================================ */
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 순환되는 배경색 */
+.stage__bg {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-primary-01);
+  transition: background-color 0.6s ease;
+}
+
+/* 화면 중앙의 작품 커버 (배경색이 여백으로 보임) */
+.stage__cover {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100vh;
+  width: auto;
+  max-width: 100vw;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.stage__cover.is-visible {
+  opacity: 1;
+}
+
+/* ============================================================
+   단어 파편 (Figma: keyworkds)
+   - 흰 배경 + 검정 글자 + 가로 80% 압축 + mix-blend-difference
+   ============================================================ */
+.word-rain {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  isolation: isolate;
+  mix-blend-mode: difference;
+}
+
+.word-fragment {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0 2px;
+  font-family: var(--font-family-ko);
+  font-weight: var(--font-weight-regular-ko);
+  font-size: var(--font-size-caption-sm);
+  line-height: 1;
+  color: var(--color-black);
+  background: var(--color-white);
+  white-space: nowrap;
+  transform-origin: left top;
+  will-change: transform;
+}
+
+/* ============================================================
+   입력창 (Figma: Frame 27)
+   ============================================================ */
+.typing-box {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+.typing-box__input {
+  width: 212px;
+  padding: 4px 6px;
+  border: 1px solid #767676;
+  border-radius: 3px;
+  background: var(--color-white);
+  color: var(--color-black);
+  font-family: var(--font-family-ko);
+  font-size: 16px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.typing-box__input::placeholder {
+  color: rgb(168, 168, 168);
+  opacity: 1;
+}
+
+.typing-box__input:focus {
+  outline: none;
+}
+
+.typing-box__send {
+  padding: 4px 6px;
+  border: 1px solid #767676;
+  border-radius: 3px;
+  background: var(--color-white);
+  color: var(--color-black);
+  font-family: var(--font-family-en);
+  font-size: 16px;
+  line-height: 1.2;
+  cursor: pointer;
+}
