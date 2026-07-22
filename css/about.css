@@ -43,6 +43,15 @@ body.about-page .nav__lang {
   line-height: 1.4;
 }
 
+/* CV 텍스트만 blend (배경/컨테이너에는 blend 없음) */
+.about__cv .cv-block__label,
+.about__cv .cv-row__year,
+.about__cv .cv-row__desc {
+  color: var(--color-white);
+  isolation: isolate;
+  mix-blend-mode: difference;
+}
+
 /* 학력·개인전·그룹전: 라벨(1열)과 내용(2열)을 하나의 공통 그리드로 묶는다.
    1열을 max-content 로 두면 라벨 열 너비가 세 라벨 중 "가장 긴 것"에 자동으로 맞춰진다. */
 .cv-grid {
@@ -156,4 +165,239 @@ body.about-page .nav__lang {
   background: var(--color-white);
   color: var(--color-black);
   padding: 0 2px;
+}
+
+/* ============================================================
+   About 반응형 (Figma Mobile — body.about-page 만 적용)
+   - 767px 이하: Mobile Mode Variables + column 레이아웃
+   - 768~1023: Tablet (Desktop·Mobile 보간)
+   - 1024~1439: Desktop (기본 스타일)
+   - 1440px~: Wide (Desktop 유지)
+   ============================================================ */
+
+/* --- Mobile (max-width: 767px) --- */
+@media (max-width: 767px) {
+  body.about-page {
+    --font-size-body: 18px;
+    --font-size-title: 28px;
+    --font-size-caption-lg: 22px;
+    --font-size-caption-md: 18px;
+    --spacing-32: 32px;
+    overflow-x: hidden;
+  }
+
+  body.about-page .nav {
+    height: 29px;
+    padding: 0 2px 1px;
+  }
+
+  body.about-page .nav__logo.title-en,
+  body.about-page .nav > .nav__link.title-en,
+  body.about-page .nav__lang.title-en {
+    font-size: var(--font-size-caption-lg);
+    line-height: 1;
+  }
+
+  body.about-page .about {
+    flex-direction: column;
+    gap: var(--spacing-28);
+    padding: 49px 0 0;
+    max-width: 100%;
+  }
+
+  body.about-page .about__intro {
+    order: -1;
+    max-width: none;
+    width: 100%;
+    gap: var(--spacing-32);
+    padding: 0 2px;
+    box-sizing: border-box;
+  }
+
+  body.about-page .about__contact {
+    font-size: var(--font-size-caption-md);
+  }
+
+  /* CV 녹색 블록 — 풀블리드, 배경 blend 없음, 내부 px 2px */
+  body.about-page .about__cv {
+    flex: none;
+    width: 100%;
+    background-color: var(--color-primary-04);
+    padding: var(--spacing-28) 0;
+    gap: var(--spacing-20);
+    box-sizing: border-box;
+    mix-blend-mode: normal;
+  }
+
+  /* Figma: 섹션별 세로 스택 (라벨 → 내용, gap 8px / 섹션 간 gap 20px) */
+  body.about-page .cv-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-20);
+  }
+
+  body.about-page .cv-grid > .cv-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-8);
+    padding: 0 2px;
+    box-sizing: border-box;
+  }
+
+  /* Figma CV: 전 항목 body-ko(18px) — 라벨도 title(28px) 아님 */
+  body.about-page .about__cv,
+  body.about-page .about__cv .cv-block__label,
+  body.about-page .about__cv .cv-row__year,
+  body.about-page .about__cv .cv-row__desc {
+    font-size: var(--font-size-body);
+    line-height: 1.4;
+  }
+
+  body.about-page .cv-block__rows {
+    width: 100%;
+  }
+
+  body.about-page .cv-row {
+    gap: var(--spacing-8);
+  }
+
+  body.about-page .cv-row__year {
+    flex: 0 0 35px;
+  }
+
+  body.about-page .cv-row__desc {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  body.about-page .cv-block--full {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-8);
+    padding: 0 2px;
+    box-sizing: border-box;
+  }
+
+  body.about-page .cv-row--full .cv-row__desc {
+    width: 100%;
+  }
+}
+
+/* --- Small mobile (max-width: 480px) --- */
+@media (max-width: 480px) {
+  body.about-page .about {
+    padding-top: 49px;
+  }
+}
+
+/* --- Tablet (768px ~ 1023px) --- */
+@media (min-width: 768px) and (max-width: 1023px) {
+  body.about-page .about {
+    flex-direction: column;
+    padding: 60px 0 0;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body.about-page .about__intro {
+    order: -1;
+    max-width: none;
+    width: 100%;
+    gap: var(--spacing-56);
+    padding: 0 2px;
+    box-sizing: border-box;
+  }
+
+  body.about-page .about__cv {
+    flex: none;
+    width: 100%;
+    background-color: var(--color-primary-04);
+    padding: var(--spacing-28) 0;
+    gap: var(--spacing-20);
+    box-sizing: border-box;
+    mix-blend-mode: normal;
+  }
+
+  body.about-page .cv-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-20);
+  }
+
+  body.about-page .cv-grid > .cv-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-8);
+    padding: 0 2px;
+    box-sizing: border-box;
+  }
+
+  body.about-page .cv-block--full {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-8);
+    padding: 0 2px;
+    box-sizing: border-box;
+  }
+
+  /* CV 글자크기 = 자기소개 (.about__text) 와 동일 — Desktop body 28px */
+  body.about-page .about__cv,
+  body.about-page .about__cv .cv-block__label,
+  body.about-page .about__cv .cv-row__year,
+  body.about-page .about__cv .cv-row__desc {
+    font-size: var(--font-size-body);
+    line-height: 1.4;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1023px) {
+  body.about-page .about {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--spacing-28);
+    padding: 64px 0 0;
+  }
+
+  body.about-page .about__intro {
+    order: 0;
+    flex: 1 1 auto;
+    gap: var(--spacing-56);
+    padding: 0;
+  }
+
+  body.about-page .about__cv {
+    flex: 0 0 42%;
+    width: auto;
+    background-color: transparent;
+    padding: 0;
+    gap: var(--spacing-28);
+  }
+
+  body.about-page .cv-grid {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: var(--spacing-20);
+    row-gap: var(--spacing-28);
+  }
+
+  body.about-page .cv-grid > .cv-block {
+    display: contents;
+    padding: 0;
+  }
+
+  body.about-page .cv-block--full {
+    flex-direction: row;
+    gap: var(--spacing-28);
+    padding: 0;
+  }
+}
+
+/* --- Wide (min-width: 1440px) --- */
+@media (min-width: 1440px) {
+  body.about-page .about__intro {
+    max-width: 1080px;
+  }
 }

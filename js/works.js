@@ -17,7 +17,7 @@ const previewEl = document.getElementById("preview");
 function pickText(field, lang) {
   if (!field) return "";
   if (typeof field === "string") return field;
-  lang = lang || "ko";
+  lang = lang || (typeof getLang === "function" ? getLang() : "ko");
   return field[lang] || field.ko || field.en || "";
 }
 
@@ -143,3 +143,5 @@ loadWorksData(ROOT)
     if (gridEl) gridEl.innerHTML = "";
     if (listEl) listEl.innerHTML = "";
   });
+
+window.addEventListener("langchange", render);

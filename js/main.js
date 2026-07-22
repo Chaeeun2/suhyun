@@ -12,7 +12,7 @@ const WORDS = ABOUT_INTRO.split(/\s+/).filter(Boolean);
 const BG_COLORS = ["#d298ff", "#fffb00", "#00d9ff", "#00ff4d"];
 
 /* 낙하 파라미터 (계단식: 0.5초마다 10px씩 즉시 이동, 모두 같은 속도) */
-const SPAWN_INTERVAL = 3000; // 새 파편 생성 간격(ms)
+const SPAWN_INTERVAL = 2500; // 새 파편 생성 간격(ms)
 const MAX_ACTIVE = 30; // 화면에 동시에 존재할 최대 파편 수
 const STEP_INTERVAL = 500; // 낙하 간격(ms)
 const STEP_DISTANCE = 20; // 한 번에 내려가는 거리(px)

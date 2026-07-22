@@ -128,6 +128,7 @@ body.works-page .nav__lang {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  gap: var(--spacing-8);
   padding: 20px 0 4px 0;
   border-bottom: 3px solid;
   font-family: var(--font-family-en);
@@ -137,15 +138,21 @@ body.works-page .nav__lang {
 }
 
 .list-row__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-family: var(--font-family-ko);
   font-weight: var(--font-weight-regular-ko);
 }
 
 .list-row__cat {
+  flex: 0 0 auto;
   text-align: center;
 }
 
 .list-row__date {
+  flex: 0 0 auto;
   text-align: right;
 }
 
@@ -165,4 +172,121 @@ body.works-page .nav__lang {
 
 .works__preview.is-visible {
   opacity: 1;
+}
+
+/* ============================================================
+   Work 페이지 반응형 (Figma Mobile — body.works-page 만 적용)
+   - 767px 이하: Mobile Mode Variables + 2열 grid
+   - 480px 이하: bar 세로 2줄 (필터 / 뷰)
+   - 1024~1439: Desktop (기본 스타일)
+   - 1440px~: Wide (Desktop 유지)
+   ============================================================ */
+
+/* --- Mobile (max-width: 767px) --- */
+@media (max-width: 767px) {
+  body.works-page {
+    --font-size-caption-lg: 22px;
+    --font-size-caption-sm: 16px;
+    overflow-x: hidden;
+  }
+
+  body.works-page .nav {
+    height: 29px;
+    padding: 0 2px 1px;
+  }
+
+  body.works-page .nav__logo.title-en,
+  body.works-page .nav > .nav__link.title-en,
+  body.works-page .nav__lang.title-en {
+    font-size: var(--font-size-caption-lg);
+    line-height: 1;
+  }
+
+  body.works-page .works {
+    padding: 49px 0 0;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body.works-page .works__bar {
+    padding: 0 2px var(--spacing-20);
+  }
+
+  body.works-page .works__filters,
+  body.works-page .works__views {
+    width: fit-content;
+    max-width: 100%;
+    font-size: var(--font-size-caption-lg);
+    line-height: 1;
+    padding: 0 2px 4px;
+    box-sizing: border-box;
+  }
+
+  /* Figma: 2열 grid, gap 8px, 이미지 full width */
+  body.works-page .works__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
+    padding: 0;
+  }
+
+  body.works-page .grid-item__title {
+    font-size: var(--font-size-caption-sm);
+    line-height: 1;
+  }
+
+  /* Figma list: caption-lg 22px, 행 간 gap 20px, 구분선 2px */
+  body.works-page .works.is-list-view .works__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-20);
+    padding: 0;
+  }
+
+  body.works-page .list-row {
+    padding: 0 2px 4px;
+    font-size: var(--font-size-caption-lg);
+    line-height: 1;
+    border-bottom: 2px solid;
+  }
+
+  /* 모바일: 호버 썸네일 숨김 */
+  body.works-page .works__preview {
+    display: none;
+  }
+}
+
+/* --- Small mobile (max-width: 480px) --- */
+@media (max-width: 480px) {
+  /* Figma: 필터 / 뷰 토글 세로 2줄 */
+  body.works-page .works__bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-8);
+  }
+
+  body.works-page .works__filters {
+    flex-wrap: wrap;
+  }
+}
+
+/* --- Tablet (768px ~ 1023px) --- */
+@media (min-width: 768px) and (max-width: 1023px) {
+  body.works-page .works {
+    padding-top: 60px;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body.works-page .works__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* --- Desktop bar 복귀 (1024px ~) --- */
+@media (min-width: 1024px) {
+  body.works-page .works__bar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 }

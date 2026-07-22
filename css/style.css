@@ -133,6 +133,55 @@ a {
   line-height: 1.05;
 }
 
+.title-ko {
+  font-family: var(--font-family-ko);
+  font-weight: var(--font-weight-regular-ko);
+  font-size: var(--font-size-title);
+  line-height: 1.05;
+}
+
+.body-ko {
+  font-family: var(--font-family-ko);
+  font-weight: var(--font-weight-regular-ko);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+}
+
+.caption-lg-en {
+  font-family: var(--font-family-en);
+  font-weight: var(--font-weight-regular-en);
+  font-size: var(--font-size-caption-lg);
+  line-height: 1;
+}
+
+.caption-lg-ko {
+  font-family: var(--font-family-ko);
+  font-weight: var(--font-weight-regular-ko);
+  font-size: var(--font-size-caption-lg);
+  line-height: 1;
+}
+
+.caption-sm-ko {
+  font-family: var(--font-family-ko);
+  font-weight: var(--font-weight-regular-ko);
+  font-size: var(--font-size-caption-sm);
+  line-height: 1;
+}
+
+.caption-en {
+  font-family: var(--font-family-en);
+  font-weight: var(--font-weight-regular-en);
+  font-size: var(--font-size-caption-sm);
+  line-height: 1;
+}
+
+.caption-md-en {
+  font-family: var(--font-family-en);
+  font-weight: var(--font-weight-regular-en);
+  font-size: var(--font-size-caption-md, var(--font-size-body));
+  line-height: 1;
+}
+
 /* ============================================================
    네비게이션 (Figma: Frame 7)
    - 로고 / work / about / en — flex space-between
@@ -192,7 +241,8 @@ a {
 .nav__logo .nav__link:hover,
 .nav > .nav__link:hover,
 .nav > .nav__link.is-active,
-.nav__lang:hover {
+.nav__lang:hover,
+.nav__lang.is-active {
   text-decoration: underline;
   text-underline-position: from-font;
   text-decoration-thickness: 3px;
@@ -203,6 +253,24 @@ a {
   background: transparent;
   color: inherit;
   cursor: pointer;
+}
+
+/* Mobile: 모든 underline 2px (전 페이지 공통) */
+@media (max-width: 767px) {
+  .nav__logo .nav__link:hover,
+  .nav > .nav__link:hover,
+  .nav > .nav__link.is-active,
+  .nav__lang:hover,
+  .nav__lang.is-active,
+  .filter.is-active,
+  .view.is-active,
+  .cv-block__label .han-narrow {
+    text-decoration-thickness: 2px;
+  }
+
+  .list-row {
+    border-bottom-width: 2px;
+  }
 }
 
 /* 메인 페이지: 헤더(.nav) 전체에 blend — 내부 요소 개별 blend 해제 */
@@ -328,4 +396,93 @@ body.main-page .nav__lang {
   font-size: 16px;
   line-height: 1.2;
   cursor: pointer;
+}
+
+/* ============================================================
+   Main 페이지 반응형 (Figma Mobile — body.main-page 만 적용)
+   - 767px 이하: Mobile Mode Variables
+   - 768~1023: Tablet (Desktop·Mobile 보간)
+   - 1024~1439: Desktop (기본 스타일)
+   - 1440px~: Wide
+   ============================================================ */
+
+/* --- Mobile (max-width: 767px) --- */
+@media (max-width: 767px) {
+  body.main-page {
+    --font-size-caption-sm: 16px;
+    --font-size-caption-lg: 22px;
+  }
+
+  body.main-page .nav {
+    height: 29px;
+    padding: 0 2px 1px;
+  }
+
+  body.main-page .nav__logo.title-en,
+  body.main-page .nav > .nav__link.title-en,
+  body.main-page .nav__lang.title-en {
+    font-size: var(--font-size-caption-lg);
+    line-height: 1;
+  }
+
+  body.main-page .stage {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body.main-page .stage__cover {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    transform: translateY(-50%);
+    object-fit: contain;
+  }
+
+  body.main-page .typing-box {
+    left: 2px;
+    right: 2px;
+    width: calc(100% - 4px);
+    transform: none;
+    justify-content: center;
+  }
+}
+
+/* --- Small mobile (max-width: 480px) --- */
+@media (max-width: 480px) {
+  body.main-page .typing-box {
+    flex-wrap: wrap;
+    row-gap: var(--spacing-8);
+    bottom: 16px;
+  }
+
+  body.main-page .typing-box__input {
+    width: 100%;
+    max-width: 212px;
+    min-width: 0;
+  }
+}
+
+/* --- Tablet (768px ~ 1023px) --- */
+@media (min-width: 768px) and (max-width: 1023px) {
+  body.main-page .stage__cover {
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    max-height: calc(100vh - 80px);
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+  }
+}
+
+/* --- Wide (min-width: 1440px) --- */
+@media (min-width: 1440px) {
+  body.main-page .stage__cover {
+    height: 100vh;
+    width: auto;
+    max-width: 100vw;
+  }
 }

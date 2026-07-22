@@ -42,7 +42,10 @@ function renderWork(work) {
 }
 
 function renderNotFound() {
-  titleEl.textContent = "작품을 찾을 수 없습니다";
+  titleEl.textContent =
+    typeof getLang === "function" && getLang() === "en"
+      ? "Work not found"
+      : "작품을 찾을 수 없습니다";
   galleryEl.innerHTML = "";
 }
 
@@ -58,3 +61,4 @@ function load() {
 
 load();
 window.addEventListener("hashchange", load);
+window.addEventListener("langchange", load);

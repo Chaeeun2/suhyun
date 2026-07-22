@@ -45,6 +45,21 @@ body.detail-page .nav__lang {
   margin-bottom: var(--spacing-8);
 }
 
+/* Figma Frame 37: 흰 배경 박스 + 글자만 blend */
+.detail__title > .ko-narrow {
+  display: inline-block;
+  background: var(--color-white);
+  padding: 1px 2px;
+  line-height: 1.05;
+}
+
+.detail__title-text,
+.detail__title > .ko-narrow .han-narrow {
+  color: var(--color-white);
+  isolation: isolate;
+  mix-blend-mode: difference;
+}
+
 .detail__meta {
   font-family: var(--font-family-ko);
   font-weight: var(--font-weight-regular-ko);
@@ -77,4 +92,141 @@ body.detail-page .nav__lang {
   width: 100%;
   height: auto;
   display: block;
+}
+
+/* ============================================================
+   Work detail 반응형 (Figma Mobile — body.detail-page 만 적용)
+   - 767px 이하: column, info → media, full width 이미지
+   - 768~900: Tablet column
+   - 901~1023: Tablet 2열 보간
+   - 1024~1439: Desktop (기본 스타일)
+   - 1440px~: Wide (Desktop 유지)
+   ============================================================ */
+
+/* --- Mobile (max-width: 767px) --- */
+@media (max-width: 767px) {
+  body.detail-page {
+    --font-size-body: 18px;
+    --font-size-title: 28px;
+    --font-size-caption-lg: 22px;
+    --spacing-32: 32px;
+    overflow-x: hidden;
+  }
+
+  body.detail-page .nav {
+    height: 29px;
+    padding: 0 2px 1px;
+  }
+
+  body.detail-page .nav__logo.title-en,
+  body.detail-page .nav > .nav__link.title-en,
+  body.detail-page .nav__lang.title-en {
+    font-size: var(--font-size-caption-lg);
+    line-height: 1;
+  }
+
+  /* Figma: column, padding-top 48px, info-media gap 20px */
+  body.detail-page .detail {
+    flex-direction: column;
+    gap: var(--spacing-20);
+    padding: 48px 0 0;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body.detail-page .detail__info {
+    position: static;
+    top: auto;
+    width: 100%;
+    min-width: 0;
+    padding: 0 2px;
+    box-sizing: border-box;
+  }
+
+  /* Figma: title-meta gap 4px, meta-desc gap 32px */
+  body.detail-page .detail__title {
+    margin-bottom: var(--spacing-4);
+  }
+
+  body.detail-page .detail__meta {
+    margin-bottom: var(--spacing-32);
+  }
+
+  body.detail-page .detail__meta,
+  body.detail-page .detail__desc {
+    overflow-wrap: anywhere;
+  }
+
+  /* Figma: media full width, gap 4px */
+  body.detail-page .detail__media {
+    flex: none;
+    width: 100%;
+    align-items: stretch;
+  }
+}
+
+/* --- Tablet (768px ~ 1023px) --- */
+@media (min-width: 768px) and (max-width: 900px) {
+  body.detail-page {
+    --spacing-32: 32px;
+  }
+
+  body.detail-page .detail {
+    flex-direction: column;
+    gap: var(--spacing-20);
+    padding-top: 60px;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body.detail-page .detail__info {
+    position: static;
+    top: auto;
+    width: 100%;
+    min-width: 0;
+    padding: 0 2px;
+    box-sizing: border-box;
+  }
+
+  body.detail-page .detail__title {
+    margin-bottom: var(--spacing-4);
+  }
+
+  body.detail-page .detail__meta {
+    margin-bottom: var(--spacing-32);
+  }
+
+  body.detail-page .detail__media {
+    flex: none;
+    width: 100%;
+    align-items: stretch;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1023px) {
+  body.detail-page .detail {
+    gap: var(--spacing-28);
+    padding-top: 64px;
+  }
+
+  body.detail-page .detail__info {
+    position: sticky;
+    top: 64px;
+    width: calc(42% - var(--spacing-28));
+    min-width: 260px;
+  }
+
+  body.detail-page .detail__title {
+    margin-bottom: var(--spacing-8);
+  }
+
+  body.detail-page .detail__meta {
+    margin-bottom: var(--spacing-40);
+  }
+
+  body.detail-page .detail__media {
+    flex: 0 0 58%;
+    width: 58%;
+    align-items: flex-end;
+  }
 }
