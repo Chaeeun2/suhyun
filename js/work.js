@@ -30,6 +30,9 @@ function renderWork(work) {
     img.src = ROOT + src;
     img.alt = title;
     img.loading = "lazy";
+    img.addEventListener("click", function () {
+      openLightbox(img.src, img.alt);
+    });
     galleryEl.appendChild(img);
   });
 
@@ -62,3 +65,56 @@ function load() {
 load();
 window.addEventListener("hashchange", load);
 window.addEventListener("langchange", load);
+
+/* ============================================================
+   이미지 전체 화면 확대 (lightbox)
+   ============================================================ */
+let lightboxEl = null;
+
+function lightboxLabel() {
+  return typeof getLang === "function" && getLang() === "en"
+    ? "Expanded image"
+    : "확대 이미지";
+}
+
+function ensureLightbox() {
+  if (lightboxEl) return lightboxEl;
+
+  lightboxEl = document.createElement("div");
+  lightboxEl.className = "detail-lightbox";
+  lightboxEl.hidden = true;
+  lightboxEl.setAttribute("role", "dialog");
+  lightboxEl.setAttribute("aria-modal", "true");
+
+  const img = document.createElement("img");
+  img.className = "detail-lightbox__img";
+  img.alt = "";
+  lightboxEl.appendChild(img);
+
+  lightboxEl.addEventListener("click", closeLightbox);
+  document.body.appendChild(lightboxEl);
+  document.addEventListener("keydown", onLightboxKeydown);
+
+  return lightboxEl;
+}
+
+function openLightbox(src, alt) {
+  const lb = ensureLightbox();
+  const img = lb.querySelector(".detail-lightbox__img");
+  img.src = src;
+  img.alt = alt || "";
+  lb.setAttribute("aria-label", lightboxLabel());
+  lb.hidden = false;
+  document.body.classList.add("detail-lightbox-open");
+}
+
+function closeLightbox() {
+  if (!lightboxEl || lightboxEl.hidden) return;
+  lightboxEl.hidden = true;
+  lightboxEl.querySelector(".detail-lightbox__img").removeAttribute("src");
+  document.body.classList.remove("detail-lightbox-open");
+}
+
+function onLightboxKeydown(e) {
+  if (e.key === "Escape") closeLightbox();
+}

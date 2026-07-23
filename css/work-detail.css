@@ -90,6 +90,42 @@ body.detail-page .nav__lang {
   display: block;
 }
 
+.detail__media img {
+  cursor: zoom-in;
+}
+
+/* 이미지 전체 화면 확대 */
+body.detail-lightbox-open {
+  overflow: hidden;
+}
+
+.detail-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-20);
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.92);
+  cursor: zoom-out;
+}
+
+.detail-lightbox[hidden] {
+  display: none;
+}
+
+.detail-lightbox__img {
+  max-width: 100%;
+  max-height: 100dvh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 /* ============================================================
    Work detail 반응형 (Figma Mobile — body.detail-page 만 적용)
    - 767px 이하: column, info → media, full width 이미지
