@@ -1,33 +1,43 @@
 /* ============================================================
    작품 상세 페이지 (work/view/#slug)
-   - URL 해시에서 슬러그를 읽어 works.js 데이터에서 작품을 찾아 렌더
-   → JSON에 작품을 추가하면 자동으로 상세 페이지가 생기는 구조
+   - Firestore works → 문서 ID(slug)로 작품 조회·렌더
    ============================================================ */
 
 const titleEl = document.getElementById("workTitle");
 const metaEl = document.getElementById("workMeta");
 const descEl = document.getElementById("workDesc");
 const galleryEl = document.getElementById("workGallery");
+const detailMain = document.querySelector(".detail");
 
-/* 상세 페이지는 work/view/ 안에 있으므로 루트까지 ../../ 로 올라간다 */
 const ROOT = "../../";
 
 function getSlug() {
   return window.location.hash.replace(/^#/, "").trim();
 }
 
+function setDetailState(state) {
+  if (!detailMain) return;
+  detailMain.setAttribute("data-load-state", state);
+  detailMain.setAttribute("aria-busy", state === "loading" ? "true" : "false");
+}
+
 function renderWork(work) {
-  const title = workText(work.title);
-  document.title = `${title} — Su`;
-  titleEl.textContent = title;
+  var title = workText(work.title);
+  document.title = title + " — Su";
 
-  metaEl.textContent = workText(work.caption);
-  descEl.textContent = workText(work.description);
+  if (titleEl) titleEl.textContent = title;
+  if (metaEl) metaEl.textContent = workText(work.caption);
+  if (descEl) descEl.textContent = workText(work.description);
 
+  if (!galleryEl) return;
   galleryEl.innerHTML = "";
-  (work.detailImages || []).forEach((src) => {
-    const img = document.createElement("img");
-    img.src = ROOT + src;
+
+  (work.detailImages || []).forEach(function (item) {
+    var url = workMediaUrl(item, ROOT);
+    if (!url) return;
+
+    var img = document.createElement("img");
+    img.src = url;
     img.alt = title;
     img.loading = "lazy";
     img.addEventListener("click", function () {
@@ -37,29 +47,68 @@ function renderWork(work) {
   });
 
   if (work.video) {
-    const video = document.createElement("video");
-    video.src = ROOT + work.video;
-    video.controls = true;
-    galleryEl.appendChild(video);
+    var videoUrl = workMediaUrl(work.video, ROOT);
+    if (videoUrl) {
+      var video = document.createElement("video");
+      video.src = videoUrl;
+      video.controls = true;
+      galleryEl.appendChild(video);
+    }
   }
+
+  setDetailState("ok");
 }
 
 function renderNotFound() {
-  titleEl.textContent =
-    typeof getLang === "function" && getLang() === "en"
-      ? "Work not found"
-      : "작품을 찾을 수 없습니다";
-  galleryEl.innerHTML = "";
+  var en = typeof getLang === "function" && getLang() === "en";
+
+  if (titleEl) {
+    titleEl.textContent = en ? "Work not found" : "작품을 찾을 수 없습니다";
+  }
+  if (metaEl) metaEl.textContent = "";
+  if (descEl) descEl.textContent = "";
+  if (galleryEl) galleryEl.innerHTML = "";
+  setDetailState("empty");
+}
+
+function renderLoadError() {
+  var en = typeof getLang === "function" && getLang() === "en";
+
+  if (titleEl) {
+    titleEl.textContent = en ? "Could not load work" : "작품을 불러오지 못했습니다";
+  }
+  if (metaEl) metaEl.textContent = "";
+  if (descEl) descEl.textContent = "";
+  if (galleryEl) galleryEl.innerHTML = "";
+  setDetailState("error");
 }
 
 function load() {
-  loadWorksData(ROOT)
-    .then((works) => {
-      const slug = getSlug();
-      const work = works.find((w) => w.slug === slug);
-      work ? renderWork(work) : renderNotFound();
-    })
-    .catch(() => renderNotFound());
+  var slug = getSlug();
+
+  if (!slug) {
+    renderNotFound();
+    return;
+  }
+
+  setDetailState("loading");
+
+  loadWorksData(ROOT).then(function (result) {
+    if (result.status === "error") {
+      renderLoadError();
+      return;
+    }
+
+    var work = (result.works || []).find(function (w) {
+      return w.slug === slug;
+    });
+
+    if (work) {
+      renderWork(work);
+    } else {
+      renderNotFound();
+    }
+  });
 }
 
 load();
@@ -69,7 +118,7 @@ window.addEventListener("langchange", load);
 /* ============================================================
    이미지 전체 화면 확대 (lightbox)
    ============================================================ */
-let lightboxEl = null;
+var lightboxEl = null;
 
 function lightboxLabel() {
   return typeof getLang === "function" && getLang() === "en"
@@ -86,7 +135,7 @@ function ensureLightbox() {
   lightboxEl.setAttribute("role", "dialog");
   lightboxEl.setAttribute("aria-modal", "true");
 
-  const img = document.createElement("img");
+  var img = document.createElement("img");
   img.className = "detail-lightbox__img";
   img.alt = "";
   lightboxEl.appendChild(img);
@@ -99,8 +148,8 @@ function ensureLightbox() {
 }
 
 function openLightbox(src, alt) {
-  const lb = ensureLightbox();
-  const img = lb.querySelector(".detail-lightbox__img");
+  var lb = ensureLightbox();
+  var img = lb.querySelector(".detail-lightbox__img");
   img.src = src;
   img.alt = alt || "";
   lb.setAttribute("aria-label", lightboxLabel());

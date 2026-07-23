@@ -1,0 +1,55 @@
+{
+  // Worker 이름 (Cloudflare 대시보드에 표시되는 이름)
+  "name": "suhyun-worker",
+  // Worker 진입점 파일
+  "main": "src/index.js",
+  // Wrangler 호환성 기준 날짜
+  "compatibility_date": "2026-07-23",
+  // Cloudflare 계정 ID (contact@alolot.kr)
+  "account_id": "c57f9078bd2c2b6a4b8d0fb757d7aaf2",
+
+  // R2 버킷 연결(binding) 설정
+  // Worker 코드 안에서는 env.MEDIA_BUCKET 으로 접근합니다.
+  "r2_buckets": [
+    {
+      "binding": "MEDIA_BUCKET",
+      "bucket_name": "suhyun-assets",
+    },
+  ],
+
+  // 환경 변수(vars): 브라우저에 노출돼도 안전한 "설정 값"만 넣습니다.
+  //   ⚠️ R2 Access Key / Secret Key 같은 비밀 값은 여기에 넣지 않습니다.
+  //      (비밀 값이 필요하면 `wrangler secret put` 사용)
+  "vars": {
+    // 업로드/삭제 요청을 허용할 웹사이트 주소(Origin).
+    //   - 쉼표(,)로 여러 개 지정 가능. 예) "https://alolot.kr,https://www.alolot.kr"
+    //   - 끝에 슬래시(/)를 붙이지 않습니다.
+    //   - localhost / 127.0.0.1 은 (포트와 무관하게) 코드에서 자동 허용되므로 넣지 않아도 됩니다.
+    //   👉 실제 서비스 웹사이트 주소만 적으면 됩니다.
+    "ALLOWED_ORIGIN": "https://suhyun-dfcb8.web.app,https://suhyun-dfcb8.firebaseapp.com",
+
+    // 업로드된 미디어를 공개적으로 제공하는 도메인.
+    //   - R2 퍼블릭 버킷 도메인 또는 연결한 커스텀 도메인.
+    //   - 예) "media.alolot.kr" 또는 "pub-xxxxxxxx.r2.dev"
+    //   - 비워두면 Worker 자신의 주소로 url을 생성합니다(로컬 테스트용).
+    //   👉 공개 도메인을 준비했다면 여기에 입력해 주세요.
+    "PUBLIC_MEDIA_DOMAIN": "pub-07e9aee2fcc045b5a0db94be4e95cbfb.r2.dev",
+
+    // 업로드 최대 용량 (MB 단위)
+    "MAX_UPLOAD_MB": 25,
+
+    // 허용할 파일 형식(MIME) 목록. 쉼표로 구분.
+    "ALLOWED_TYPES": "image/jpeg,image/png,image/webp,image/gif,image/avif,video/mp4",
+  },
+
+  // .html 파일을 문자열(Text)로 import 할 수 있게 하는 규칙
+  // (테스트 페이지를 Worker가 직접 서빙하기 위함)
+  "rules": [{ "type": "Text", "globs": ["**/*.html"], "fallthrough": true }],
+
+  // 배포 시 Workers.dev 서브도메인에서 접근 가능하도록 설정
+  "workers_dev": true,
+  // 관측(로그/메트릭) 활성화
+  "observability": {
+    "enabled": true,
+  },
+}

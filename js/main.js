@@ -19,7 +19,7 @@ const STEP_DISTANCE = 20; // 한 번에 내려가는 거리(px)
 const COVER_INTERVAL = 3500; // 커버·배경색 순환 간격(ms)
 
 /* 상태 */
-let works = []; // works.json 로드 결과
+let works = []; // Firestore works 로드 결과
 let wordIndex = 0; // 어절 순서 인덱스
 let coverIndex = 0; // 커버·색 순환 인덱스
 const fragments = []; // 현재 떨어지는 파편들 { el, x, y, speed, text }
@@ -31,15 +31,15 @@ const stageBg = document.querySelector(".stage__bg");
 const cover = document.querySelector(".stage__cover");
 
 /* ------------------------------------------------------------
-   works.json 로드 (없어도 화면은 동작)
+   Firestore works 로드 (없어도 화면은 동작)
    ------------------------------------------------------------ */
 function loadWorks() {
   return loadWorksData("")
-    .then((data) => {
-      works = data;
+    .then(function (result) {
+      works = result.works || [];
       startCoverCycle();
     })
-    .catch(() => {
+    .catch(function () {
       works = [];
       startCoverCycle();
     });
@@ -53,8 +53,15 @@ function applyCover() {
 
   if (works.length > 0) {
     const work = works[coverIndex % works.length];
-    cover.src = work.thumbnail;
-    cover.classList.add("is-visible");
+    const thumbUrl = workMediaUrl(work.thumbnail, "");
+    if (thumbUrl) {
+      cover.src = thumbUrl;
+      cover.classList.add("is-visible");
+    } else {
+      cover.classList.remove("is-visible");
+    }
+  } else {
+    cover.classList.remove("is-visible");
   }
 }
 

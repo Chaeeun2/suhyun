@@ -87,6 +87,13 @@ body.works-page .nav__lang {
   min-width: 0;
 }
 
+.works__status {
+  margin: 0;
+  padding: var(--spacing-20) 0;
+  font-family: var(--font-family-en);
+  font-size: var(--font-size-caption-lg);
+}
+
 /* list 뷰: grid 숨기고 list 표시 */
 .works.is-list-view .works__grid {
   display: none;

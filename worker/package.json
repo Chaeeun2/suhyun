@@ -1,0 +1,21 @@
+{
+  "name": "suhyun-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker + R2 (suhyun-assets) for suhyun project",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "start": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "whoami": "wrangler whoami",
+    "tail": "wrangler tail"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "wrangler": "^4.113.0"
+  }
+}

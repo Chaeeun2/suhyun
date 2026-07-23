@@ -1,4 +1,7 @@
 {
+  "firestore": {
+    "rules": "firestore.rules"
+  },
   "hosting": {
     "public": ".",
     "ignore": [
@@ -24,6 +27,14 @@
       {
         "source": "/",
         "destination": "/Index.html"
+      },
+      {
+        "source": "/admin/login",
+        "destination": "/admin/login/index.html"
+      },
+      {
+        "source": "/admin",
+        "destination": "/admin/index.html"
       }
     ]
   }

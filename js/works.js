@@ -1,10 +1,10 @@
 /* ============================================================
    작품 목록 페이지 (work/)
-   - data/works.js 를 불러 그리드/리스트로 렌더
+   - Firestore works 컬렉션 → 그리드/리스트 렌더
    - 카테고리 필터 + grid/list 토글 + 리스트 호버 썸네일
    ============================================================ */
 
-const ROOT = "../"; // work/ 기준 루트 경로
+const ROOT = "../";
 
 const worksEl = document.querySelector(".works");
 const gridEl = document.getElementById("grid");
@@ -13,7 +13,8 @@ const filtersEl = document.getElementById("filters");
 const viewsEl = document.getElementById("views");
 const previewEl = document.getElementById("preview");
 
-/* 다국어 텍스트 (title / caption / description → { ko, en }) */
+let statusEl = null;
+
 function pickText(field, lang) {
   if (!field) return "";
   if (typeof field === "string") return field;
@@ -21,37 +22,87 @@ function pickText(field, lang) {
   return field[lang] || field.ko || field.en || "";
 }
 
+function statusMessage(status) {
+  var en = typeof getLang === "function" && getLang() === "en";
+
+  if (status === "loading") {
+    return en ? "Loading works…" : "작품을 불러오는 중…";
+  }
+  if (status === "empty") {
+    return en ? "No works to display." : "등록된 작품이 없습니다.";
+  }
+  if (status === "error") {
+    return en ? "Could not load works." : "작품을 불러오지 못했습니다.";
+  }
+  return "";
+}
+
+function ensureStatusEl() {
+  if (statusEl || !worksEl) return statusEl;
+
+  statusEl = document.createElement("p");
+  statusEl.id = "worksStatus";
+  statusEl.className = "works__status blend-text";
+  statusEl.hidden = true;
+  statusEl.setAttribute("aria-live", "polite");
+  worksEl.insertBefore(statusEl, gridEl);
+  return statusEl;
+}
+
+function setPageState(status) {
+  if (worksEl) {
+    worksEl.setAttribute("data-load-state", status);
+    worksEl.setAttribute("aria-busy", status === "loading" ? "true" : "false");
+  }
+
+  var el = ensureStatusEl();
+  if (!el) return;
+
+  if (status === "ok") {
+    el.hidden = true;
+    el.textContent = "";
+    return;
+  }
+
+  el.hidden = false;
+  el.textContent = statusMessage(status);
+}
+
 let allWorks = [];
 let currentCat = "all";
 let currentView = "grid";
 
-/* 상세 페이지 링크 (해시 슬러그) */
 function detailUrl(work) {
-  return `view/#${work.slug}`;
+  return "view/#" + work.slug;
 }
 
 function filtered() {
   if (currentCat === "all") return allWorks;
-  return allWorks.filter((w) => w.category === currentCat);
+  return allWorks.filter(function (w) {
+    return w.category === currentCat;
+  });
 }
 
-/* 그리드 렌더 */
 function renderGrid() {
+  if (!gridEl) return;
   gridEl.innerHTML = "";
-  filtered().forEach((work) => {
-    const a = document.createElement("a");
+
+  filtered().forEach(function (work) {
+    var thumbUrl = workMediaUrl(work.thumbnail, ROOT);
+    if (!thumbUrl) return;
+
+    var a = document.createElement("a");
     a.className = "grid-item";
     a.href = detailUrl(work);
 
-    const img = document.createElement("img");
-    img.src = ROOT + work.thumbnail;
+    var img = document.createElement("img");
+    img.src = thumbUrl;
     img.alt = pickText(work.title);
     img.loading = "lazy";
 
-    // 배경 박스(블렌드 없음) + 안쪽 글자(흰색 + 블렌드) 2겹 구조
-    const title = document.createElement("span");
+    var title = document.createElement("span");
     title.className = "grid-item__title";
-    const titleText = document.createElement("span");
+    var titleText = document.createElement("span");
     titleText.className = "grid-item__title-text";
     titleText.textContent = pickText(work.title);
     title.appendChild(titleText);
@@ -61,35 +112,37 @@ function renderGrid() {
   });
 }
 
-/* 리스트 렌더 */
 function renderList() {
+  if (!listEl) return;
   listEl.innerHTML = "";
-  filtered().forEach((work) => {
-    const row = document.createElement("a");
+
+  filtered().forEach(function (work) {
+    var row = document.createElement("a");
     row.className = "list-row blend-text";
     row.href = detailUrl(work);
 
-    const title = document.createElement("span");
+    var title = document.createElement("span");
     title.className = "list-row__title";
     title.textContent = pickText(work.title);
 
-    const cat = document.createElement("span");
+    var cat = document.createElement("span");
     cat.className = "list-row__cat";
     cat.textContent = work.category;
 
-    const date = document.createElement("span");
+    var date = document.createElement("span");
     date.className = "list-row__date";
     date.textContent = work.date;
 
     row.append(title, cat, date);
 
-    // 호버 시 썸네일 미리보기
-    row.addEventListener("mouseenter", () => {
-      previewEl.src = ROOT + work.thumbnail;
+    row.addEventListener("mouseenter", function () {
+      var url = workMediaUrl(work.thumbnail, ROOT);
+      if (!url || !previewEl) return;
+      previewEl.src = url;
       previewEl.classList.add("is-visible");
     });
-    row.addEventListener("mouseleave", () => {
-      previewEl.classList.remove("is-visible");
+    row.addEventListener("mouseleave", function () {
+      if (previewEl) previewEl.classList.remove("is-visible");
     });
 
     listEl.appendChild(row);
@@ -97,51 +150,95 @@ function renderList() {
 }
 
 function render() {
-  try {
-    renderGrid();
-    renderList();
-  } catch (err) {
-    console.error("work render error:", err);
+  var items = filtered();
+
+  if (allWorks.length === 0) {
+    if (gridEl) gridEl.innerHTML = "";
+    if (listEl) listEl.innerHTML = "";
+  } else if (items.length === 0) {
+    if (gridEl) gridEl.innerHTML = "";
+    if (listEl) listEl.innerHTML = "";
+    var el = ensureStatusEl();
+    if (el) {
+      var en = typeof getLang === "function" && getLang() === "en";
+      el.hidden = false;
+      el.textContent = en
+        ? "No works in this category."
+        : "해당 카테고리에 작품이 없습니다.";
+    }
+  } else {
+    setPageState("ok");
+    try {
+      renderGrid();
+      renderList();
+    } catch (err) {
+      console.error("work render error:", err);
+    }
   }
+
   if (worksEl) {
     worksEl.classList.toggle("is-list-view", currentView === "list");
   }
 }
 
-/* 필터 클릭 */
-filtersEl.addEventListener("click", (e) => {
-  const btn = e.target.closest(".filter");
-  if (!btn) return;
-  currentCat = btn.dataset.cat;
-  filtersEl.querySelectorAll(".filter").forEach((b) => b.classList.toggle("is-active", b === btn));
-  render();
-});
-
-/* 뷰 토글 */
-viewsEl.addEventListener("click", (e) => {
-  const btn = e.target.closest(".view");
-  if (!btn) return;
-  currentView = btn.dataset.view;
-  viewsEl.querySelectorAll(".view").forEach((b) => b.classList.toggle("is-active", b === btn));
-  render();
-});
-
-/* 썸네일이 마우스를 따라다니게 */
-document.addEventListener("mousemove", (e) => {
-  previewEl.style.left = `${e.clientX}px`;
-  previewEl.style.top = `${e.clientY}px`;
-});
-
-/* 데이터 로드 */
-loadWorksData(ROOT)
-  .then((data) => {
-    allWorks = data;
+if (filtersEl) {
+  filtersEl.addEventListener("click", function (e) {
+    var btn = e.target.closest(".filter");
+    if (!btn) return;
+    currentCat = btn.dataset.cat;
+    filtersEl.querySelectorAll(".filter").forEach(function (b) {
+      b.classList.toggle("is-active", b === btn);
+    });
     render();
-  })
-  .catch((err) => {
-    console.error("works.js load error:", err);
+  });
+}
+
+if (viewsEl) {
+  viewsEl.addEventListener("click", function (e) {
+    var btn = e.target.closest(".view");
+    if (!btn) return;
+    currentView = btn.dataset.view;
+    viewsEl.querySelectorAll(".view").forEach(function (b) {
+      b.classList.toggle("is-active", b === btn);
+    });
+    render();
+  });
+}
+
+if (previewEl) {
+  document.addEventListener("mousemove", function (e) {
+    previewEl.style.left = e.clientX + "px";
+    previewEl.style.top = e.clientY + "px";
+  });
+}
+
+setPageState("loading");
+
+loadWorksData(ROOT).then(function (result) {
+  allWorks = result.works || [];
+
+  if (result.status === "error") {
+    setPageState("error");
     if (gridEl) gridEl.innerHTML = "";
     if (listEl) listEl.innerHTML = "";
-  });
+    return;
+  }
 
-window.addEventListener("langchange", render);
+  if (result.status === "empty") {
+    setPageState("empty");
+    if (gridEl) gridEl.innerHTML = "";
+    if (listEl) listEl.innerHTML = "";
+    return;
+  }
+
+  render();
+});
+
+window.addEventListener("langchange", function () {
+  var state = worksEl && worksEl.getAttribute("data-load-state");
+  if (state && state !== "ok") {
+    setPageState(state);
+  } else {
+    render();
+  }
+});

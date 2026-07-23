@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login — Su</title>
+    <link rel="stylesheet" href="../../css/admin.css" />
+  </head>
+  <body class="admin-login">
+    <div class="login-container">
+      <header class="login-header">
+        <h1 class="heading">Su Admin</h1>
+        <p class="body">관리자 계정은 제작사로 문의해 주세요.</p>
+      </header>
+
+      <form class="login-form" id="loginForm" novalidate>
+        <div class="login-form__fields">
+          <div class="form-group-text">
+            <input
+              class="input body"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="이메일"
+              autocomplete="username"
+              required
+            />
+          </div>
+          <div class="form-group-text">
+            <input
+              class="input body"
+              type="password"
+              id="password"
+              name="password"
+              placeholder="비밀번호"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+        </div>
+
+        <button class="btn-login button" type="submit" id="loginButton">
+          로그인
+        </button>
+
+        <p class="login-form__error caption" id="loginError" hidden>
+          잘못된 이메일 또는 비밀번호입니다.
+        </p>
+      </form>
+    </div>
+
+    <script type="module" src="../../js/admin/login.js"></script>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 /* ============================================================
-   works.json 다국어 텍스트 헬퍼 (공용)
-   - title / caption / description 은 { ko, en } 객체 (data/works.js 백틱 문자열)
+   works 다국어 텍스트 헬퍼 (공용)
+   - title / caption / description 은 Firestore { ko, en } 객체
    - 현재 언어: js/lang.js getLang() (localStorage 저장)
    ============================================================ */
 

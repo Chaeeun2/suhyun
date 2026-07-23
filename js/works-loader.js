@@ -1,73 +1,71 @@
 /* ============================================================
-   works 데이터 로더
-   - data/works.js 의 WORKS_RAW 를 불러온 뒤 slug 를 자동 생성
-   - slug 는 제목(영문 우선 → 국문)으로 만들고, 한글만이면 work-01 형식
+   works 데이터 로더 (Firestore)
+   - works 컬렉션 조회 → order 내림차순 정렬
+   - 문서 ID = slug
+   - 미디어: R2 { url, objectKey, type, size } → url 사용
    ============================================================ */
 
-function makeSlug(work, index) {
-  var title = work.title || {};
-  var source = (title.en || title.ko || "").trim();
+var _preloadedThumbUrls = {};
 
-  var slug = source
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 60);
+/**
+ * 미디어 URL 반환
+ * - R2 객체: { url, ... }
+ * - 레거시 문자열(백업 참고용): basePath 접두
+ */
+function workMediaUrl(media, basePath) {
+  basePath = basePath || "";
 
-  if (!slug || slug.length < 2 || /^[0-9-]+$/.test(slug)) {
-    slug = "work-" + String(index + 1).padStart(2, "0");
+  if (!media) return "";
+
+  if (typeof media === "string") {
+    if (/^https?:\/\//i.test(media)) return media;
+    return basePath + media;
   }
 
-  return slug;
+  return media.url || "";
 }
 
-function parseWorkDate(dateStr) {
-  var parts = (dateStr || "").split("/");
-  var y = parseInt(parts[0], 10) || 0;
-  var m = parseInt(parts[1], 10) || 0;
-  return y * 100 + m;
-}
+/**
+ * 썸네일 preload (중복 요청 방지)
+ */
+function preloadWorkThumbnails(works, basePath) {
+  (works || []).forEach(function (work) {
+    var url = workMediaUrl(work.thumbnail, basePath);
+    if (!url || _preloadedThumbUrls[url]) return;
 
-function sortWorksByDateDesc(raw) {
-  return (raw || []).slice().sort(function (a, b) {
-    return parseWorkDate(b.date) - parseWorkDate(a.date);
+    _preloadedThumbUrls[url] = true;
+
+    var link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = url;
+    document.head.appendChild(link);
   });
 }
 
-function prepareWorks(raw) {
-  var used = {};
-  return sortWorksByDateDesc(raw).map(function (work, index) {
-    var slug = makeSlug(work, index);
-    var suffix = 2;
-
-    while (used[slug]) {
-      slug = makeSlug(work, index) + "-" + suffix;
-      suffix += 1;
-    }
-    used[slug] = true;
-
-    return Object.assign({}, work, { slug: slug });
-  });
-}
-
+/**
+ * Firestore works 목록 로드
+ * @returns {Promise<{ works: Array, status: 'ok'|'empty'|'error' }>}
+ */
 function loadWorksData(basePath) {
   basePath = basePath || "";
 
-  if (window.WORKS_RAW) {
-    return Promise.resolve(prepareWorks(window.WORKS_RAW));
-  }
-
-  return new Promise(function (resolve, reject) {
-    var script = document.createElement("script");
-    script.src = basePath + "data/works.js";
-    script.onload = function () {
-      resolve(prepareWorks(window.WORKS_RAW || []));
-    };
-    script.onerror = function () {
-      reject(new Error("works.js load failed"));
-    };
-    document.head.appendChild(script);
-  });
+  return import(basePath + "js/firebase/works-store.js")
+    .then(function (mod) {
+      return mod.fetchWorksList().then(function (works) {
+        var list = Array.isArray(works) ? works : [];
+        preloadWorkThumbnails(list, basePath);
+        return {
+          works: list,
+          status: list.length ? "ok" : "empty",
+        };
+      });
+    })
+    .catch(function (err) {
+      console.error("Firestore works load error:", err);
+      return {
+        works: [],
+        status: "error",
+      };
+    });
 }

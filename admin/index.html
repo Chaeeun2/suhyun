@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>works 관리 — Su Admin</title>
+    <link rel="stylesheet" href="../css/admin.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+  </head>
+  <body class="admin-page">
+    <!-- 1024px 이하: admin-mobile -->
+    <div class="admin-mobile" id="adminMobile">
+      <div class="mo-notice-container">
+        <div class="notice">
+          <p class="title">PC 환경에서 접속해 주세요.</p>
+          <div class="small">
+            <p>관리자 페이지는 PC 환경에 최적화되어 있습니다.</p>
+            <p>원활한 사용을 위해 PC로 접속해주세요.</p>
+          </div>
+        </div>
+        <div class="pc-icon" aria-hidden="true">
+          <svg width="115" height="100" viewBox="0 0 115 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="8" width="95" height="62" rx="6" fill="#EAEAEA"/>
+            <rect x="18" y="16" width="79" height="46" rx="4" fill="#F5F5F5"/>
+            <rect x="44" y="58" width="27" height="4" rx="2" fill="#999"/>
+            <path d="M30 78H85C92 78 97 83 97 90V92H18V90C18 83 23 78 30 78Z" fill="#191919"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1025px 이상: admin 데스크톱 -->
+    <div class="admin-desktop" id="adminDesktop">
+      <div class="side-bar-container">
+        <aside class="side-bar">
+          <div class="site-name">
+            <div class="site-name__text">
+              <p class="title">Su Admin</p>
+              <button type="button" class="link-logout" id="logoutButton">로그아웃</button>
+            </div>
+            <hr class="site-name__divider" />
+          </div>
+          <nav class="gnb">
+            <a class="menu is-active" href="/admin">works</a>
+          </nav>
+        </aside>
+        <hr class="side-bar-border" />
+      </div>
+
+      <main class="admin-content">
+        <div class="header-container">
+          <header class="admin-header">
+            <h1 class="heading">works 관리</h1>
+            <button type="button" class="btn-primary" id="saveOrderButton">저장</button>
+          </header>
+          <hr class="header-border" />
+        </div>
+
+        <div class="admin-content-layout">
+          <div class="tab-bar-container">
+            <div class="tab-bar" id="categoryTabs" role="tablist">
+              <button type="button" class="tab is-active" data-cat="all" role="tab">all</button>
+              <button type="button" class="tab" data-cat="books" role="tab">books</button>
+              <button type="button" class="tab" data-cat="print" role="tab">print</button>
+              <button type="button" class="tab" data-cat="installation" role="tab">installation</button>
+              <button type="button" class="tab" data-cat="other" role="tab">other</button>
+            </div>
+            <hr class="tab-bar-border" />
+          </div>
+
+          <div class="admin-content-main">
+            <div class="section-header">
+              <h2 class="title" id="sectionTitle">all 작품 관리</h2>
+              <button type="button" class="btn-primary" id="addWorkButton">작품 추가 +</button>
+            </div>
+            <div class="pending-deletes" id="pendingDeletes" hidden>
+              <p class="pending-deletes__text body">
+                R2 미디어 삭제에 실패한 항목이 있습니다.
+                <span class="pending-deletes__keys" id="pendingDeleteKeys"></span>
+              </p>
+              <button type="button" class="btn-secondary" id="retryDeleteButton">삭제 재시도</button>
+            </div>
+            <div class="project-list" id="projectList"></div>
+            <p class="project-list__empty body" id="emptyMessage" hidden>등록된 작품이 없습니다.</p>
+            <p class="project-list__error caption" id="listError" hidden></p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- admin-modal: 작품 추가·수정 -->
+    <div class="modal-overlay" id="workModal" hidden>
+      <div class="modal-body" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-header-container">
+          <header class="modal-header">
+            <h2 class="title" id="modalTitle">프로젝트 관리: 새 작품</h2>
+            <div class="modal-header__actions">
+              <button type="button" class="btn-secondary" id="modalCancelButton">취소</button>
+              <button type="button" class="btn-primary" id="modalSaveButton">저장</button>
+            </div>
+          </header>
+          <hr class="header-border" />
+        </div>
+
+        <div class="form-container">
+          <form class="work-form" id="workForm" novalidate>
+            <p class="work-form__error caption" id="formError" hidden></p>
+
+            <section class="input-section">
+              <h3 class="input-section-title subtitle">프로젝트명</h3>
+              <div class="form-group-grid">
+                <div class="form-group-text">
+                  <label class="form-label body" for="titleKo">국문</label>
+                  <input class="input" type="text" id="titleKo" placeholder="프로젝트명을 입력하세요." required />
+                </div>
+                <div class="form-group-text">
+                  <label class="form-label body" for="titleEn">영문</label>
+                  <input class="input" type="text" id="titleEn" placeholder="Enter the project name." />
+                </div>
+              </div>
+            </section>
+
+            <section class="input-section">
+              <h3 class="input-section-title subtitle">상세 정보</h3>
+              <div class="form-group-grid">
+                <div class="form-group-select">
+                  <label class="form-label body" for="category">분류</label>
+                  <select class="input select" id="category" required>
+                    <option value="">선택하세요.</option>
+                    <option value="books">books</option>
+                    <option value="print">print</option>
+                    <option value="installation">installation</option>
+                    <option value="other">other</option>
+                  </select>
+                </div>
+                <div class="form-group-text">
+                  <label class="form-label body" for="date">발표시기</label>
+                  <input class="input" type="text" id="date" placeholder="ex. 2026/04" required />
+                </div>
+              </div>
+            </section>
+
+            <section class="input-section">
+              <h3 class="input-section-title subtitle">캡션</h3>
+              <div class="form-group-grid">
+                <div class="form-group-textarea">
+                  <label class="form-label body" for="captionKo">국문</label>
+                  <textarea class="input textarea" id="captionKo" rows="4" placeholder="ex. 2026년 4월&#10;실시간 그래픽 생성, 2채널 프로젝션 설치, 가변 크기"></textarea>
+                </div>
+                <div class="form-group-textarea">
+                  <label class="form-label body" for="captionEn">영문</label>
+                  <textarea class="input textarea" id="captionEn" rows="4" placeholder="ex. April 2026&#10;Real-time graphic generation, 2-channel projection installation, variable size"></textarea>
+                </div>
+              </div>
+            </section>
+
+            <section class="input-section">
+              <h3 class="input-section-title subtitle">작품 설명</h3>
+              <div class="form-group-stack">
+                <div class="form-group-textarea form-group-textarea--full">
+                  <label class="form-label body" for="descriptionKo">국문</label>
+                  <textarea class="input textarea" id="descriptionKo" rows="4" placeholder="작품 설명을 입력하세요."></textarea>
+                </div>
+                <div class="form-group-textarea form-group-textarea--full">
+                  <label class="form-label body" for="descriptionEn">영문</label>
+                  <textarea class="input textarea" id="descriptionEn" rows="4" placeholder="Enter the description about this project."></textarea>
+                </div>
+              </div>
+            </section>
+
+            <section class="input-section">
+              <h3 class="input-section-title subtitle">썸네일</h3>
+              <div class="file-upload">
+                <button type="button" class="btn-upload button" id="thumbnailUploadButton">
+                  <span class="btn-upload__icon" aria-hidden="true">↑</span>
+                  미디어 업로드
+                </button>
+                <p class="file-upload__hint caption">제한 용량: 1MB / 허용 확장자 : WebP, JPG, PNG, GIF, MP4</p>
+                <input type="file" id="thumbnailFile" accept=".webp,.jpg,.jpeg,.png,.gif,.mp4,image/webp,image/jpeg,image/png,image/gif,video/mp4" hidden />
+              </div>
+              <div class="thumbnail-preview" id="thumbnailPreview" hidden>
+                <img class="thumbnail-preview__img" id="thumbnailPreviewImg" alt="" />
+                <button type="button" class="media-delete" id="thumbnailDeleteButton" aria-label="썸네일 삭제">×</button>
+              </div>
+            </section>
+
+            <section class="input-section">
+              <h3 class="input-section-title subtitle">상세 미디어</h3>
+              <div class="file-upload">
+                <button type="button" class="btn-upload button" id="detailUploadButton">
+                  <span class="btn-upload__icon" aria-hidden="true">↑</span>
+                  미디어 업로드
+                </button>
+                <p class="file-upload__hint caption">제한 용량: 1MB / 허용 확장자 : WebP, JPG, PNG, GIF, MP4</p>
+                <input type="file" id="detailFiles" accept=".webp,.jpg,.jpeg,.png,.gif,.mp4,image/webp,image/jpeg,image/png,image/gif,video/mp4" multiple hidden />
+              </div>
+              <div class="media-preview" id="detailPreview"></div>
+            </section>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="../js/admin/index.js"></script>
+  </body>
+</html>
